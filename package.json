@@ -37,7 +37,9 @@
     "routing-controllers-openapi": "^3.0.0",
     "swagger-ui-express": "^4.1.6",
     "winston": "^3.3.3",
-    "winston-daily-rotate-file": "^4.5.5"
+    "winston-daily-rotate-file": "^4.5.5",
+    "tsc-alias": "^1.4.1",
+    "tsconfig-paths": "^3.10.1"
   },
   "prisma": {
     "seed": "ts-node ./prisma/seed.ts"
