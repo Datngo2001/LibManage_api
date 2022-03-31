@@ -38,5 +38,5 @@
     "src/**/*.json", 
     ".env",
   ],
-  "exclude": ["node_modules", "src/http", "src/logs", "src/tests"]
+  "exclude": ["node_modules", "src/http", "src/logs", "src/tests", "src/config/index.ts"]
 }
