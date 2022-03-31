@@ -5,9 +5,9 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "start": "npx prisma generate && node dist/server.js",
+    "start": "node dist/server.js",
     "dev": "cross-env NODE_ENV=development nodemon",
-    "build": "tsc && tsc-alias",
+    "build": "tsc && tsc-alias && npx prisma generate",
     "build:swc": "swc src -d dist --source-maps --copy-files",
     "test": "jest --forceExit --detectOpenHandles",
     "lint": "eslint --ignore-path .gitignore --ext .ts src/",
@@ -40,8 +40,7 @@
     "swagger-ui-express": "^4.1.6",
     "tsconfig-paths": "^3.10.1",
     "winston": "^3.3.3",
-    "winston-daily-rotate-file": "^4.5.5",
-    "cross-env": "^7.0.3"
+    "winston-daily-rotate-file": "^4.5.5"
   },
   "prisma": {
     "seed": "ts-node ./prisma/seed.ts"
