@@ -5,7 +5,7 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "start": "npx prisma generate && cross-env NODE_ENV=production node dist/server.js",
+    "start": "npx prisma generate && node dist/server.js",
     "dev": "cross-env NODE_ENV=development nodemon",
     "build": "tsc && tsc-alias",
     "build:swc": "swc src -d dist --source-maps --copy-files",
