@@ -70,7 +70,7 @@ class AuthService {
       sameSite = process.env.SAMESITE
     }
 
-    return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn}; SameSite=${sameSite}`;
+    return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn}; SameSite=${sameSite}: Secure=true`;
   }
 }
 
