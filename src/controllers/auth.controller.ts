@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { Controller, Req, Body, Post, UseBefore, HttpCode, Res } from 'routing-controllers';
-import { CreateUserDto, LoginDto } from '@dtos/users.dto';
+import { CreateUserDto, LoginDto, SignupDto } from '@dtos/users.dto';
 import { RequestWithUser } from '@interfaces/auth.interface';
 import authMiddleware from '@middlewares/auth.middleware';
 import { validationMiddleware } from '@middlewares/validation.middleware';
@@ -13,9 +13,9 @@ export class AuthController {
   public authService = new AuthService();
 
   @Post('/signup')
-  @UseBefore(validationMiddleware(CreateUserDto, 'body'))
+  @UseBefore(validationMiddleware(SignupDto, 'body'))
   @HttpCode(201)
-  async signUp(@Body() userData: CreateUserDto) {
+  async signUp(@Body() userData: SignupDto) {
     const signUpUserData: User = await this.authService.signup(userData);
     return { data: signUpUserData, message: 'signup' };
   }
