@@ -3,6 +3,7 @@ import { User } from '@prisma/client';
 
 export interface DataStoredInToken {
   id: number;
+  username: string
   role: string;
 }
 

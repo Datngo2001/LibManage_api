@@ -21,7 +21,6 @@ const authMiddleware = (roles: string[]) => {
         if (findUser && findUser?.roleName == userRole) {
           debugger
           var findRole = roles.find((role) => role == userRole)
-          console.log(findRole)
           if (findRole) {
             req.user = findUser;
             next();

@@ -60,7 +60,6 @@ class App {
     if (DEVORIGIN != undefined) {
       origin.push(DEVORIGIN)
     }
-    console.log(origin)
     useExpressServer(this.app, {
       cors: {
         origin: origin,
