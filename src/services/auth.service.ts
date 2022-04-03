@@ -63,7 +63,14 @@ class AuthService {
   }
 
   public createCookie(tokenData: TokenData): string {
-    return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn};`;
+    var sameSite;
+    if (process.env.SAMESITE === undefined) {
+      sameSite = 'Lax' // Defaut same site attrubute
+    } else {
+      sameSite = process.env.SAMESITE
+    }
+
+    return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn}; SameSite=${sameSite}`;
   }
 }
 

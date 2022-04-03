@@ -50,7 +50,7 @@ class App {
     this.app.use(hpp());
     this.app.use(helmet());
     this.app.use(compression());
-    this.app.use(express.json());
+    this.app.use(express.json({ type: 'application/json' }));
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(cookieParser());
   }
@@ -60,7 +60,7 @@ class App {
     if (DEVORIGIN != undefined) {
       origin.push(DEVORIGIN)
     }
-
+    console.log(origin)
     useExpressServer(this.app, {
       cors: {
         origin: origin,
