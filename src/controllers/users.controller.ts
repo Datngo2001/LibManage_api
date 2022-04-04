@@ -7,7 +7,7 @@ import { validationMiddleware } from '@middlewares/validation.middleware';
 import authMiddleware from '@/middlewares/auth.middleware';
 import policyList from '@/policies';
 
-@Controller()
+@Controller('/api')
 export class UsersController {
   public userService = new userService();
 

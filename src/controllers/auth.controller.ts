@@ -8,7 +8,7 @@ import AuthService from '@services/auth.service';
 import { User } from '@prisma/client';
 import policyList from '@/policies';
 
-@Controller()
+@Controller('/api')
 export class AuthController {
   public authService = new AuthService();
 
