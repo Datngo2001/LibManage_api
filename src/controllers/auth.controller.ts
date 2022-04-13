@@ -30,7 +30,7 @@ export class AuthController {
   }
 
   @Post('/logout')
-  @UseBefore(authMiddleware(policyList.publicPolicy))
+  @UseBefore(authMiddleware([]))
   async logOut(@Req() req: RequestWithUser, @Res() res: Response) {
     const userData: User = req.user;
     const logOutUserData: User = await this.authService.logout(userData);

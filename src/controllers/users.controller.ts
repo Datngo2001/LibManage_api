@@ -12,7 +12,7 @@ export class UsersController {
   public userService = new userService();
 
   @Get('/users')
-  @UseBefore(authMiddleware(policyList.adminPolicy))
+  @UseBefore(authMiddleware([3]))
   @OpenAPI({ summary: 'Return a list of users' })
   async getUsers() {
     const findAllUsersData: User[] = await this.userService.findAllUser();
@@ -20,7 +20,7 @@ export class UsersController {
   }
 
   @Get('/users/:id')
-  @UseBefore(authMiddleware(policyList.adminPolicy))
+  @UseBefore(authMiddleware([3]))
   @OpenAPI({ summary: 'Return find a user' })
   async getUserById(@Param('id') userId: number) {
     const findOneUserData: User = await this.userService.findUserById(userId);
@@ -29,7 +29,7 @@ export class UsersController {
 
   @Post('/users')
   @HttpCode(201)
-  @UseBefore(authMiddleware(policyList.adminPolicy))
+  @UseBefore(authMiddleware([1]))
   @UseBefore(validationMiddleware(CreateUserDto, 'body'))
   @OpenAPI({ summary: 'Create a new user' })
   async createUser(@Body() userData: CreateUserDto) {
@@ -38,7 +38,7 @@ export class UsersController {
   }
 
   @Put('/users/:id')
-  @UseBefore(authMiddleware(policyList.adminPolicy))
+  @UseBefore(authMiddleware([4]))
   @UseBefore(validationMiddleware(CreateUserDto, 'body', true))
   @OpenAPI({ summary: 'Update a user' })
   async updateUser(@Param('id') userId: number, @Body() userData: CreateUserDto) {
@@ -47,7 +47,7 @@ export class UsersController {
   }
 
   @Delete('/users/:id')
-  @UseBefore(authMiddleware(policyList.adminPolicy))
+  @UseBefore(authMiddleware([2]))
   @OpenAPI({ summary: 'Delete a user' })
   async deleteUser(@Param('id') userId: number) {
     const deleteUserData: User = await this.userService.deleteUser(userId);

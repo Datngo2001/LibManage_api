@@ -10,7 +10,6 @@ import { User } from '@prisma/client';
 
 class AuthService {
   public users = prisma.user;
-  readonly defaultRole = 'user'
 
   public async signup(userData: SignupDto): Promise<User> {
     if (isEmpty(userData)) throw new HttpException(400, "You're not userData");
@@ -18,8 +17,20 @@ class AuthService {
     const findUser: User = await this.users.findUnique({ where: { username: userData.username } });
     if (findUser) throw new HttpException(409, `You're username ${userData.username} already exists`);
 
+    const userGroupName = "_" + userData.username;
     const hashedPassword = await hash(userData.password, 10);
-    const createUserData: Promise<User> = this.users.create({ data: { ...userData, password: hashedPassword, roleName: this.defaultRole } });
+    const createUserData: Promise<User> = this.users.create(
+      {
+        data: {
+          ...userData,
+          password: hashedPassword,
+          groups: {
+            create: { name: userGroupName },
+            connect: { id: 4 }
+          }
+        }
+      }
+    );
 
     return createUserData;
   }
@@ -33,7 +44,9 @@ class AuthService {
     const isPasswordMatching: boolean = await compare(userData.password, findUser.password);
     if (!isPasswordMatching) throw new HttpException(409, "You're password not matching");
 
-    const tokenData = this.createToken(findUser);
+    const permissionCodes = await this.getPermissionCode(findUser);
+
+    const tokenData = this.createToken(findUser, permissionCodes);
     const cookie = this.createCookie(tokenData);
 
     return { cookie, findUser };
@@ -54,8 +67,8 @@ class AuthService {
     return findUser;
   }
 
-  public createToken(user: User): TokenData {
-    const dataStoredInToken: DataStoredInToken = { id: user.id, role: user.roleName, username: user.username };
+  public createToken(user: User, perCodes: number[]): TokenData {
+    const dataStoredInToken: DataStoredInToken = { id: user.id, permisionCodes: perCodes, username: user.username };
     const secretKey: string = SECRET_KEY;
     const expiresIn: number = 60 * 60 * 60;
 
@@ -71,6 +84,25 @@ class AuthService {
     }
 
     return `Authorization=${tokenData.token}; Max-Age=${tokenData.expiresIn};  Secure=true; SameSite=${sameSite}`;
+  }
+
+  public async getPermissionCode(findUser: User) {
+    var groups = await prisma.group.findMany({
+      select: { permissions: { select: { id: true } } },
+      where: {
+        users: { some: { id: { equals: findUser.id } } }
+      }
+    })
+
+    var permisionCodes = []
+    groups.forEach(g => {
+      g.permissions.forEach(p => {
+        permisionCodes.push(p.id)
+      })
+    })
+    console.log(permisionCodes)
+
+    return permisionCodes
   }
 }
 

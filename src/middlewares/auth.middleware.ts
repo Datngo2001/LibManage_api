@@ -4,9 +4,11 @@ import { SECRET_KEY } from '@config';
 import { HttpException } from '@exceptions/HttpException';
 import { DataStoredInToken, RequestWithUser } from '@interfaces/auth.interface';
 import prisma from '@/dbclient';
-import policyList from '@/policies';
 
-const authMiddleware = (roles: string[]) => {
+//
+// if endpointPerCodes is empty the user of all group and all permission can use this enpoint
+// 
+const authMiddleware = (endpointPerCodes: number[]) => {
   return async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
       const Authorization = req.cookies['Authorization'] || (req.header('Authorization') ? req.header('Authorization').split('Bearer ')[1] : null);
@@ -15,13 +17,14 @@ const authMiddleware = (roles: string[]) => {
         const secretKey: string = SECRET_KEY;
         const verificationResponse = (await verify(Authorization, secretKey)) as DataStoredInToken;
         const userId = verificationResponse.id;
-        const userRole = verificationResponse.role;
+        const userPermisionCodes = verificationResponse.permisionCodes;
         const findUser = await prisma.user.findUnique({ where: { id: userId } })
 
-        if (findUser && findUser?.roleName == userRole) {
-          debugger
-          var findRole = roles.find((role) => role == userRole)
-          if (findRole) {
+        if (findUser) {
+          var foundCode = endpointPerCodes.find(endpointPerCode => userPermisionCodes.includes(endpointPerCode))
+          console.log(foundCode)
+          console.log(userPermisionCodes)
+          if (foundCode || endpointPerCodes.length == 0) {
             req.user = findUser;
             next();
           } else {
