@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { hash } from "bcrypt";
 import { group } from "console";
+import { connect } from "http2";
 
 let prisma = new PrismaClient()
 const users = prisma.user;
@@ -86,7 +87,8 @@ createPermissions().then(permissions => {
                                 username: 'admin',
                                 password: val,
                                 groups: {
-                                    create: { name: '_admin' }
+                                    create: { name: '_admin' },
+                                    connect: { id: 1 }
                                 }
                             }
                         }).then(val => {

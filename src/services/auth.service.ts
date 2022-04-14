@@ -35,7 +35,7 @@ class AuthService {
     return createUserData;
   }
 
-  public async login(userData: LoginDto): Promise<{ cookie: string; findUser: User }> {
+  public async login(userData: LoginDto): Promise<{ cookie: string; findUser: User, permissionCodes: number[] }> {
     if (isEmpty(userData)) throw new HttpException(400, "You're not userData");
 
     const findUser: User = await this.users.findUnique({ where: { username: userData.username } });
@@ -49,7 +49,7 @@ class AuthService {
     const tokenData = this.createToken(findUser, permissionCodes);
     const cookie = this.createCookie(tokenData);
 
-    return { cookie, findUser };
+    return { cookie, findUser, permissionCodes };
   }
 
   public async logout(userData: User): Promise<User> {
@@ -70,7 +70,7 @@ class AuthService {
   public createToken(user: User, perCodes: number[]): TokenData {
     const dataStoredInToken: DataStoredInToken = { id: user.id, permisionCodes: perCodes, username: user.username };
     const secretKey: string = SECRET_KEY;
-    const expiresIn: number = 60 * 60 * 60;
+    const expiresIn: number = 60 * 60;
 
     return { expiresIn, token: sign(dataStoredInToken, secretKey, { expiresIn }) };
   }
@@ -84,9 +84,9 @@ class AuthService {
     }
 
     if (tokenData === null) {
-      return `Authorization=, Max-Age=0,  Secure, SameSite=${sameSite}`;
+      return `Authorization=; Max-Age=0;  Secure; SameSite=${sameSite}`;
     } else {
-      return `Authorization=${tokenData.token}, Max-Age=${tokenData.expiresIn},  Secure, SameSite=${sameSite}`;
+      return `Authorization=${tokenData.token}; Max-Age=${tokenData.expiresIn};  Secure; SameSite=${sameSite}`;
     }
   }
 
