@@ -35,7 +35,8 @@ export class AuthController {
     const userData: User = req.user;
     const logOutUserData: User = await this.authService.logout(userData);
 
-    res.setHeader('Set-Cookie', ['Authorization=; Max-age=0']);
+    const cookie = this.authService.createCookie(null)
+    res.setHeader('Set-Cookie', [cookie]);
     return { data: logOutUserData, message: 'logout' };
   }
 }

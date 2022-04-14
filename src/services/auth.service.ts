@@ -83,7 +83,11 @@ class AuthService {
       sameSite = process.env.SAMESITE
     }
 
-    return `Authorization=${tokenData.token}; Max-Age=${tokenData.expiresIn};  Secure=true; SameSite=${sameSite}`;
+    if (tokenData === null) {
+      return `Authorization=; Max-Age=0;  Secure=true; SameSite=${sameSite}`;
+    } else {
+      return `Authorization=${tokenData.token}; Max-Age=${tokenData.expiresIn};  Secure=true; SameSite=${sameSite}`;
+    }
   }
 
   public async getPermissionCode(findUser: User) {
