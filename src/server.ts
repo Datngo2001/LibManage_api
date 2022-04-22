@@ -9,6 +9,7 @@ import { BorrowBillController } from './controllers/borrowbill.controller';
 import { BorrowNotifyController } from './controllers/borrownotify.controller';
 import { BorrowRegisterController } from './controllers/borrowregister.controller';
 import { CategoryController } from './controllers/category.controller';
+import { GroupController } from './controllers/group.controller';
 
 validateEnv();
 
@@ -21,6 +22,7 @@ const app = new App([
     BorrowBillController,
     BorrowNotifyController,
     BorrowRegisterController,
-    CategoryController
+    CategoryController,
+    GroupController
 ]);
 app.listen();
