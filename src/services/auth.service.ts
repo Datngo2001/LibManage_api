@@ -84,9 +84,9 @@ class AuthService {
     }
 
     if (tokenData === null) {
-      return `Authorization=; Max-Age=0;  Secure; SameSite=${sameSite}`;
+      return `Authorization=; Max-Age=0;`;
     } else {
-      return `Authorization=${tokenData.token}; Max-Age=${tokenData.expiresIn};  Secure; SameSite=${sameSite}`;
+      return `Authorization=${tokenData.token}; Max-Age=${tokenData.expiresIn};`;
     }
   }
 

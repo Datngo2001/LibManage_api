@@ -6,8 +6,7 @@ import authMiddleware from '@middlewares/auth.middleware';
 import { validationMiddleware } from '@middlewares/validation.middleware';
 import AuthService from '@services/auth.service';
 import { User } from '@prisma/client';
-import policyList from '@/policies';
-
+  
 @Controller('/api')
 export class AuthController {
   public authService = new AuthService();
