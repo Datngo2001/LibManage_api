@@ -1,15 +1,25 @@
 import { response, Response } from 'express';
-import { Controller, Req, Body, Post, UseBefore, HttpCode, Res } from 'routing-controllers';
+import { Controller, Req, Body, Post, UseBefore, HttpCode, Res, Get } from 'routing-controllers';
 import { CreateUserDto, LoginDto, SignupDto } from '@dtos/users.dto';
 import { RequestWithUser } from '@interfaces/auth.interface';
 import authMiddleware from '@middlewares/auth.middleware';
 import { validationMiddleware } from '@middlewares/validation.middleware';
 import AuthService from '@services/auth.service';
 import { User } from '@prisma/client';
-  
+import { OpenAPI } from 'routing-controllers-openapi';
+
 @Controller('/api')
 export class AuthController {
   public authService = new AuthService();
+
+  @Get('/me')
+  @UseBefore(authMiddleware([]))
+  @OpenAPI({ summary: 'Check user login state' })
+  async me(@Req() req: RequestWithUser) {
+    const userData: User = req.user;
+    userData.password = null
+    return { data: userData, message: 'OK' };
+  }
 
   @Post('/signup')
   @UseBefore(validationMiddleware(SignupDto, 'body'))
