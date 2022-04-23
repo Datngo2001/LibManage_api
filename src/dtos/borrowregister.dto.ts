@@ -7,6 +7,17 @@ export class CreateBorrowRegisterDto {
     @IsBoolean()
     public isConfirmed: boolean
 
+    @IsArray()
+    public bookIds: number[]
+}
+
+export class UpdateBorrowRegisterDto {
+    @IsString()
+    public note: string
+
+    @IsBoolean()
+    public isConfirmed: boolean
+
     @IsNumber()
     public userId: number
 

@@ -20,6 +20,7 @@ class BookService {
     }
 
     public async createBook(BookData: CreateBookDto): Promise<Book> {
+        if (isEmpty(BookData)) throw new HttpException(400, "You're not BorrowRegisterData");
 
         const createBookData: Book = await this.books.create({
             data: {
