@@ -1,23 +1,28 @@
 import { CreateBookDto } from "@/dtos/book.dto";
 import authMiddleware from "@/middlewares/auth.middleware";
 import { validationMiddleware } from "@/middlewares/validation.middleware";
+import BookService from "@/services/book.service";
 import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Put, UseBefore } from "routing-controllers";
 import { OpenAPI } from "routing-controllers-openapi";
 
 @Controller('/api')
 export class BookController {
+    bookService = new BookService();
+
     @Get('/book')
     @UseBefore(authMiddleware([]))
     @OpenAPI({ summary: '' })
     async getAll() {
-        return { data: {}, message: 'OK' };
+        const books = await this.bookService.findAllBook()
+        return { data: books, message: 'OK' };
     }
 
     @Get('/book/:id')
     @UseBefore(authMiddleware([]))
     @OpenAPI({ summary: '' })
-    async getOne() {
-        return { data: {}, message: 'OK' };
+    async getOne(@Param('id') bookId: number) {
+        const book = await this.bookService.findBookById(bookId)
+        return { data: book, message: 'OK' };
     }
 
     @Post('/book')
@@ -25,19 +30,22 @@ export class BookController {
     @UseBefore(validationMiddleware(CreateBookDto, 'body'))
     @HttpCode(201)
     async create(@Body() book: CreateBookDto) {
-        return { data: {}, message: 'created' };
+        const createdBook = await this.bookService.createBook(book)
+        return { data: createdBook, message: 'created' };
     }
 
     @Put('/book/:id')
     @UseBefore(authMiddleware([]))
     @UseBefore(validationMiddleware(CreateBookDto, 'body', true))
     async update(@Param('id') bookId: number, @Body() book: CreateBookDto) {
-        return { data: {}, message: 'updated' };
+        const updatedBook = await this.bookService.updateBook(bookId, book)
+        return { data: updatedBook, message: 'updated' };
     }
 
     @Delete('/book/:id')
     @UseBefore(authMiddleware([]))
     async delete(@Param('id') bookId: number) {
-        return { data: {}, message: 'deleted' };
+        const deletedBook = await this.bookService.deleteBook(bookId)
+        return { data: deletedBook, message: 'deleted' };
     }
 }
