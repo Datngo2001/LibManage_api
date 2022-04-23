@@ -27,7 +27,16 @@ class UserService {
     if (findUser) throw new HttpException(409, `Your username ${userData.username} already exists`);
 
     const hashedPassword = await hash(userData.password, 10);
-    const createUserData: User = await this.users.create({ data: { ...userData, password: hashedPassword } });
+    const groups = userData.groupIds.map(id => { return { id: id } })
+    const createUserData: User = await this.users.create({
+      data: {
+        username: userData.username,
+        password: hashedPassword,
+        groups: {
+          connect: groups
+        }
+      }
+    });
 
     return createUserData;
   }
@@ -39,7 +48,17 @@ class UserService {
     if (!findUser) throw new HttpException(409, "You're not user");
 
     const hashedPassword = await hash(userData.password, 10);
-    const updateUserData = await this.users.update({ where: { id: userId }, data: { ...userData, password: hashedPassword } });
+    const groups = userData.groupIds.map(id => { return { id: id } })
+    const updateUserData: User = await this.users.update({
+      where: { id: userId },
+      data: {
+        username: userData.username,
+        password: hashedPassword,
+        groups: {
+          set: groups
+        }
+      }
+    });
 
     return updateUserData;
   }
