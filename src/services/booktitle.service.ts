@@ -39,6 +39,9 @@ class BookTitleService {
                     none: {
                         isReturned: false
                     }
+                },
+                borrowRegisters: {
+                    none: {}
                 }
             }
         })

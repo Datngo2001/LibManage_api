@@ -53,7 +53,7 @@ class BorrowBillService {
             }
         });
 
-        overdueBills.map(async bill => {
+        await overdueBills.map(async bill => {
             return await this.BorrowBills.update({
                 where: { id: bill.id },
                 data: {

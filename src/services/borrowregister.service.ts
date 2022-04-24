@@ -7,6 +7,7 @@ import BorrowBillService from './borrowbill.service';
 
 class BorrowRegisterService {
     public BorrowRegisters = prisma.borrowRegister;
+    public books = prisma.book;
     borrowBillService = new BorrowBillService()
 
     public async findAllBorrowRegister(): Promise<BorrowRegister[]> {
@@ -24,7 +25,8 @@ class BorrowRegisterService {
     public async createBorrowRegister(userId: number, BorrowRegisterData: CreateBorrowRegisterDto): Promise<BorrowRegister> {
         if (isEmpty(BorrowRegisterData)) throw new HttpException(400, "You're not BorrowRegisterData");
 
-        const books = BorrowRegisterData.bookIds.map(id => { return { id: id } })
+        const avalableIds = await this.avalableBookIds(BorrowRegisterData.bookIds)
+        const books = avalableIds.map(id => { return { id: id } })
         const createBorrowRegisterData: BorrowRegister = await this.BorrowRegisters.create({
             data: {
                 note: BorrowRegisterData.note,
@@ -48,7 +50,8 @@ class BorrowRegisterService {
         const findBorrowRegister: BorrowRegister = await this.BorrowRegisters.findUnique({ where: { id: BorrowRegisterId } })
         if (!findBorrowRegister) throw new HttpException(409, "Your book title not exist");
 
-        const books = BorrowRegisterData.bookIds.map(id => { return { id: id } })
+        const avalableIds = await this.avalableBookIds(BorrowRegisterData.bookIds)
+        const books = avalableIds.map(id => { return { id: id } })
         const updateBorrowRegisterData = await this.BorrowRegisters.update({
             where: { id: BorrowRegisterId },
             data: {
@@ -73,6 +76,32 @@ class BorrowRegisterService {
 
         const deleteBorrowRegisterData = await this.BorrowRegisters.delete({ where: { id: BorrowRegisterId } });
         return deleteBorrowRegisterData;
+    }
+
+    private async avalableBookIds(bookIds: number[]) {
+        const findBooks = await this.books.findMany({
+            where: {
+                id: {
+                    in: bookIds
+                },
+                borrowBills: {
+                    none: {
+                        isReturned: false
+                    }
+                },
+                borrowRegisters: {
+                    none: {}
+                }
+            }
+        })
+
+        if (!findBooks) throw new HttpException(409, "No book avalable");
+
+        const ids = findBooks.map(book => {
+            return book.id
+        })
+
+        return ids
     }
 }
 
