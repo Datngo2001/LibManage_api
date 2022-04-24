@@ -10,19 +10,21 @@ import { BorrowNotifyController } from './controllers/borrownotify.controller';
 import { BorrowRegisterController } from './controllers/borrowregister.controller';
 import { CategoryController } from './controllers/category.controller';
 import { GroupController } from './controllers/group.controller';
+import { PermissionController } from './controllers/permission.controller';
 
 validateEnv();
 
 const app = new App([
     AuthController,
-    IndexController,
     UsersController,
+    GroupController,
+    PermissionController,
     BookTitleController,
+    IndexController,
     BookController,
     BorrowBillController,
     BorrowNotifyController,
     BorrowRegisterController,
     CategoryController,
-    GroupController
 ]);
 app.listen();
