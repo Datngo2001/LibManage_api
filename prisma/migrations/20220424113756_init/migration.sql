@@ -67,6 +67,8 @@ CREATE TABLE "BorrowBill" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
     "borrowDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "planReturnDate" TIMESTAMP(3) NOT NULL,
+    "returnDate" TIMESTAMP(3),
     "isReturned" BOOLEAN NOT NULL,
 
     CONSTRAINT "BorrowBill_pkey" PRIMARY KEY ("id")
@@ -77,6 +79,7 @@ CREATE TABLE "BorrowRegister" (
     "id" SERIAL NOT NULL,
     "note" TEXT,
     "isConfirmed" BOOLEAN NOT NULL,
+    "planReturnDate" TIMESTAMP(3) NOT NULL,
     "createDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "userId" INTEGER NOT NULL,
 

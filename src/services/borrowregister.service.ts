@@ -29,6 +29,7 @@ class BorrowRegisterService {
             data: {
                 note: BorrowRegisterData.note,
                 isConfirmed: BorrowRegisterData.isConfirmed,
+                planReturnDate: BorrowRegisterData.planReturnDate,
                 user: {
                     connect: { id: userId }
                 },
@@ -52,6 +53,7 @@ class BorrowRegisterService {
             where: { id: BorrowRegisterId },
             data: {
                 note: BorrowRegisterData.note,
+                planReturnDate: BorrowRegisterData.planReturnDate,
                 isConfirmed: BorrowRegisterData.isConfirmed,
                 user: {
                     connect: { id: BorrowRegisterData.userId }

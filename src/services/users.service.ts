@@ -1,12 +1,15 @@
 import { hash } from 'bcrypt';
 import { CreateUserDto, UpdateUserDto, UpdateUserProfileDto } from '@dtos/users.dto';
 import { HttpException } from '@exceptions/HttpException';
-import { User } from '@prisma/client';
+import { BorrowNotify, User } from '@prisma/client';
 import { isEmpty } from '@utils/util';
 import prisma from '@/dbclient';
+import BorrowBillService from './borrowbill.service';
 
 class UserService {
   public users = prisma.user;
+  public borrowNotifies = prisma.borrowNotify;
+  public borrowBillService = new BorrowBillService();
 
   public async findAllUser(): Promise<User[]> {
     const users: User[] = await this.users.findMany();
@@ -18,6 +21,42 @@ class UserService {
     if (!findUser) throw new HttpException(409, "You're not user");
 
     return findUser;
+  }
+
+  public async findUserByIdIncludeAllData(userId: number): Promise<User> {
+    await this.borrowBillService.createOverdueNotify(userId)
+    const findUser: User = await this.users.findUnique({
+      where: { id: userId },
+      include: {
+        borrowRegister: true,
+        borrowBills: {
+          include: {
+            notifies: true
+          }
+        },
+        groups: true
+      }
+    })
+    if (!findUser) throw new HttpException(409, "You're not user");
+
+    return findUser;
+  }
+
+  public async findUserNotifies(userId: number): Promise<User> {
+    await this.borrowBillService.createOverdueNotify(userId)
+    const userWithNotify: User = await this.users.findUnique({
+      where: { id: userId },
+      include: {
+        borrowBills: {
+          include: {
+            notifies: true
+          }
+        }
+      }
+    })
+    if (!userWithNotify) throw new HttpException(409, "You're not user");
+
+    return userWithNotify;
   }
 
   public async createUser(userData: CreateUserDto): Promise<User> {

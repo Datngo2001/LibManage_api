@@ -28,6 +28,22 @@ export class UsersController {
     return { data: findOneUserData, message: 'findOne' };
   }
 
+  @Get('/users/borrow/status')
+  @UseBefore(authMiddleware([21]))
+  @OpenAPI({ summary: 'Return find a user and all relate data' })
+  async getUserByIdIncludeAllData(@Req() req: RequestWithUser) {
+    const findOneUserData: User = await this.userService.findUserByIdIncludeAllData(req.user.id);
+    return { data: findOneUserData, message: 'All data' };
+  }
+
+  @Get('/users/borrow/notifies')
+  @UseBefore(authMiddleware([21]))
+  @OpenAPI({ summary: 'Return user notifies' })
+  async getUserNotifies(@Req() req: RequestWithUser) {
+    const userWithNotifies: User = await this.userService.findUserNotifies(req.user.id);
+    return { data: userWithNotifies, message: 'Notifies' };
+  }
+
   @Post('/users')
   @HttpCode(201)
   @UseBefore(authMiddleware([1]))

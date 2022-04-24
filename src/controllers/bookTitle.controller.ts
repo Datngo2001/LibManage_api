@@ -25,6 +25,14 @@ export class BookTitleController {
         return { data: bookTitle, message: 'OK' };
     }
 
+    @Get('/booktitle/:id')
+    @UseBefore(authMiddleware([]))
+    @OpenAPI({ summary: '' })
+    async getOneIncludeBooks(@Param('id') bookTitleId: number) {
+        const bookTitle = await this.bookTitleService.findBookTitleByIdIncludeBooks(bookTitleId);
+        return { data: bookTitle, message: 'OK' };
+    }
+
     @Post('/booktitle')
     @UseBefore(authMiddleware([]))
     @UseBefore(validationMiddleware(CreateBookTitleDto, 'body'))

@@ -70,23 +70,26 @@ model Book {
 }
 
 model BorrowBill {
-  id         Int            @id @default(autoincrement())
-  user       User           @relation(fields: [userId], references: [id])
-  userId     Int
-  borrowDate DateTime       @default(now())
-  isReturned Boolean
-  notifies   BorrowNotify[]
-  books      Book[]
+  id             Int            @id @default(autoincrement())
+  user           User           @relation(fields: [userId], references: [id])
+  userId         Int
+  borrowDate     DateTime       @default(now())
+  planReturnDate DateTime
+  returnDate     DateTime?
+  isReturned     Boolean
+  notifies       BorrowNotify[]
+  books          Book[]
 }
 
 model BorrowRegister {
-  id          Int      @id @default(autoincrement())
-  note        String?
-  isConfirmed Boolean
-  createDate  DateTime @default(now())
-  user        User     @relation(fields: [userId], references: [id])
-  userId      Int
-  books       Book[]
+  id             Int      @id @default(autoincrement())
+  note           String?
+  isConfirmed    Boolean
+  planReturnDate DateTime
+  createDate     DateTime @default(now())
+  user           User     @relation(fields: [userId], references: [id])
+  userId         Int
+  books          Book[]
 }
 
 model BorrowNotify {

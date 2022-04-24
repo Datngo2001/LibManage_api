@@ -5,6 +5,8 @@ import prisma from '@/dbclient';
 import { CreateBorrowBillDto, UpdateBorrowBillDto } from '@/dtos/borrowbill.dto';
 
 class BorrowBillService {
+    public readonly MIN_RETURN_TIME = 7
+    public readonly MAX_RETURN_TIME = 300
     public BorrowBills = prisma.borrowBill;
 
     public async findAllBorrowBill(): Promise<BorrowBill[]> {
@@ -23,9 +25,10 @@ class BorrowBillService {
         if (isEmpty(BorrowBillData)) throw new HttpException(400, "You're not BorrowBillData");
 
         const books = BorrowBillData.bookIds.map(id => { return { id: id } })
-        const createBorrowBillData: BorrowBill = await this.BorrowBills.create({
+        const createBorrowBillData = await this.BorrowBills.create({
             data: {
                 isReturned: false,
+                planReturnDate: BorrowBillData.planReturnDate,
                 user: {
                     connect: { id: BorrowBillData.userId }
                 },
@@ -38,6 +41,36 @@ class BorrowBillService {
         return createBorrowBillData;
     }
 
+    public async createOverdueNotify(userId: number): Promise<BorrowBill[]> {
+        const now = Date()
+
+        const overdueBills = await this.BorrowBills.findMany({
+            where: {
+                userId: userId,
+                planReturnDate: {
+                    lte: now
+                }
+            }
+        });
+
+        overdueBills.map(async bill => {
+            return await this.BorrowBills.update({
+                where: { id: bill.id },
+                data: {
+                    notifies: {
+                        create: {
+                            title: "[OVERDUE BOOK]",
+                            content: "Please return our books",
+                            isRead: false
+                        }
+                    }
+                }
+            })
+        })
+
+        return overdueBills;
+    }
+
     public async updateBorrowBill(BorrowBillId: number, BorrowBillData: UpdateBorrowBillDto): Promise<BorrowBill> {
         if (isEmpty(BorrowBillData)) throw new HttpException(400, "Empty update data");
 
@@ -45,11 +78,18 @@ class BorrowBillService {
         if (!findBorrowBill) throw new HttpException(409, "Your book title not exist");
 
         const books = BorrowBillData.bookIds.map(id => { return { id: id } })
-        const notifies = BorrowBillData.notifyIds.map(id => { return { id: id } })
+        var notifies = []
+        var returnDate = null
+        if (BorrowBillData.isReturned != true) {
+            notifies = BorrowBillData.notifyIds.map(id => { return { id: id } })
+            returnDate = Date()
+        }
         const updateBorrowBillData = await this.BorrowBills.update({
             where: { id: BorrowBillId },
             data: {
                 isReturned: BorrowBillData.isReturned,
+                planReturnDate: BorrowBillData.planReturnDate,
+                returnDate: returnDate,
                 user: {
                     connect: { id: BorrowBillData.userId }
                 },

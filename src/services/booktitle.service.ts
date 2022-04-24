@@ -20,6 +20,16 @@ class BookTitleService {
         return findBookTitle;
     }
 
+    public async findBookTitleByIdIncludeBooks(BookTitleId: number): Promise<BookTitle> {
+        const findBookTitle: BookTitle = await this.bookTitles.findUnique({
+            where: { id: BookTitleId },
+            include: { books: true }
+        })
+        if (!findBookTitle) throw new HttpException(409, "You're not BookTitle");
+
+        return findBookTitle;
+    }
+
     public async createBookTitle(BookTitleData: CreateBookTitleDto): Promise<BookTitle> {
         if (isEmpty(BookTitleData)) throw new HttpException(400, "You're not BookTitleData");
 

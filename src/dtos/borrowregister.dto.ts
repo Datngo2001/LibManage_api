@@ -1,4 +1,4 @@
-import { IsArray, IsBoolean, IsNumber, IsString } from "class-validator"
+import { IsArray, IsBoolean, IsDate, IsNumber, IsString } from "class-validator"
 
 export class CreateBorrowRegisterDto {
     @IsString()
@@ -6,6 +6,9 @@ export class CreateBorrowRegisterDto {
 
     @IsBoolean()
     public isConfirmed: boolean
+
+    @IsDate()
+    public planReturnDate: Date
 
     @IsArray()
     public bookIds: number[]
@@ -17,6 +20,9 @@ export class UpdateBorrowRegisterDto {
 
     @IsBoolean()
     public isConfirmed: boolean
+
+    @IsDate()
+    public planReturnDate: Date
 
     @IsNumber()
     public userId: number
