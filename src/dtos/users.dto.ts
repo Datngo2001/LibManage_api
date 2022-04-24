@@ -25,6 +25,12 @@ export class CreateUserDto {
 
   @IsArray()
   public groupIds: number[];
+
+  @IsString()
+  public fname: string;
+
+  @IsString()
+  public lname: string;
 }
 
 export class UpdateUserDto {
@@ -36,4 +42,10 @@ export class UpdateUserDto {
 
   @IsArray()
   public groupIds: number[];
+
+  @IsString()
+  public fname: string;
+
+  @IsString()
+  public lname: string;
 }

@@ -32,6 +32,8 @@ class UserService {
       data: {
         username: userData.username,
         password: hashedPassword,
+        fname: userData.fname,
+        lname: userData.lname,
         groups: {
           connect: groups
         }
@@ -54,6 +56,8 @@ class UserService {
       data: {
         username: userData.username,
         password: hashedPassword,
+        fname: userData.fname,
+        lname: userData.lname,
         groups: {
           set: groups
         }
