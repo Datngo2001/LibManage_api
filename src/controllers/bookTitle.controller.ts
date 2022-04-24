@@ -10,7 +10,7 @@ export class BookTitleController {
     bookTitleService = new BookTitleService();
 
     @Get('/booktitle')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([5]))
     @OpenAPI({ summary: '' })
     async getAll() {
         const bookTitles = this.bookTitleService.findAllBookTitle();
@@ -18,7 +18,7 @@ export class BookTitleController {
     }
 
     @Get('/booktitle/:id')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([5]))
     @OpenAPI({ summary: '' })
     async getOne(@Param('id') bookTitleId: number) {
         const bookTitle = await this.bookTitleService.findBookTitleById(bookTitleId);
@@ -26,7 +26,7 @@ export class BookTitleController {
     }
 
     @Get('/booktitle/:id')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([5]))
     @OpenAPI({ summary: '' })
     async getOneIncludeBooks(@Param('id') bookTitleId: number) {
         const bookTitle = await this.bookTitleService.findBookTitleByIdIncludeBooks(bookTitleId);
@@ -34,7 +34,7 @@ export class BookTitleController {
     }
 
     @Post('/booktitle')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([6]))
     @UseBefore(validationMiddleware(CreateBookTitleDto, 'body'))
     @HttpCode(201)
     async create(@Body() bookTitle: CreateBookTitleDto) {
@@ -43,7 +43,7 @@ export class BookTitleController {
     }
 
     @Put('/booktitle/:id')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([8]))
     @UseBefore(validationMiddleware(CreateBookTitleDto, 'body', true))
     async update(@Param('id') bookTitleId: number, @Body() bookTitle: CreateBookTitleDto) {
         const updateBookTitle = await this.bookTitleService.updateBookTitle(bookTitleId, bookTitle);
@@ -51,7 +51,7 @@ export class BookTitleController {
     }
 
     @Delete('/booktitle/:id')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([10]))
     async delete(@Param('id') bookTitleId: number) {
         const deleteBookTitle = await this.bookTitleService.deleteBookTitle(bookTitleId);
         return { data: deleteBookTitle, message: 'deleted' };

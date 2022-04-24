@@ -10,7 +10,7 @@ export class CategoryController {
     categoryService = new CategoryService();
 
     @Get('/category')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([6, 8, 10]))
     @OpenAPI({ summary: '' })
     async getAll() {
         const categorys = await this.categoryService.findAllCategory()
@@ -18,7 +18,7 @@ export class CategoryController {
     }
 
     @Get('/category/:id')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([6, 8, 10]))
     @OpenAPI({ summary: '' })
     async getOne(@Param('id') categoryId: number) {
         const category = await this.categoryService.findCategoryById(categoryId)
@@ -26,7 +26,7 @@ export class CategoryController {
     }
 
     @Post('/category')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([6, 8, 10]))
     @UseBefore(validationMiddleware(CreateCategoryDto, 'body'))
     @HttpCode(201)
     async create(@Body() category: CreateCategoryDto) {
@@ -35,7 +35,7 @@ export class CategoryController {
     }
 
     @Put('/category/:id')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([6, 8, 10]))
     @UseBefore(validationMiddleware(CreateCategoryDto, 'body', true))
     async update(@Param('id') categoryId: number, @Body() category: CreateCategoryDto) {
         const updatedCategory = await this.categoryService.updateCategory(categoryId, category)

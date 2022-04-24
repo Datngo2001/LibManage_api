@@ -10,7 +10,7 @@ export class BookController {
     bookService = new BookService();
 
     @Get('/book')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([5]))
     @OpenAPI({ summary: '' })
     async getAll() {
         const books = await this.bookService.findAllBook()
@@ -18,7 +18,7 @@ export class BookController {
     }
 
     @Get('/book/:id')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([5]))
     @OpenAPI({ summary: '' })
     async getOne(@Param('id') bookId: number) {
         const book = await this.bookService.findBookById(bookId)
@@ -26,7 +26,7 @@ export class BookController {
     }
 
     @Post('/book')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([7]))
     @UseBefore(validationMiddleware(CreateBookDto, 'body'))
     @HttpCode(201)
     async create(@Body() book: CreateBookDto) {
@@ -35,7 +35,7 @@ export class BookController {
     }
 
     @Put('/book/:id')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([9]))
     @UseBefore(validationMiddleware(CreateBookDto, 'body', true))
     async update(@Param('id') bookId: number, @Body() book: CreateBookDto) {
         const updatedBook = await this.bookService.updateBook(bookId, book)
@@ -43,7 +43,7 @@ export class BookController {
     }
 
     @Delete('/book/:id')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([11]))
     async delete(@Param('id') bookId: number) {
         const deletedBook = await this.bookService.deleteBook(bookId)
         return { data: deletedBook, message: 'deleted' };

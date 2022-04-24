@@ -10,7 +10,7 @@ export class BorrowBillController {
     borrowBillService = new BorrowBillService()
 
     @Get('/borrowbill')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([12]))
     @OpenAPI({ summary: '' })
     async getAll() {
         const bills = this.borrowBillService.findAllBorrowBill()
@@ -18,7 +18,7 @@ export class BorrowBillController {
     }
 
     @Get('/borrowbill/:id')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([12]))
     @OpenAPI({ summary: '' })
     async getOne(@Param('id') billId: number) {
         const bill = this.borrowBillService.findBorrowBillById(billId)
@@ -26,7 +26,7 @@ export class BorrowBillController {
     }
 
     @Post('/borrowbill')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([13]))
     @UseBefore(validationMiddleware(CreateBorrowBillDto, 'body'))
     @HttpCode(201)
     async create(@Body() bill: CreateBorrowBillDto) {
@@ -35,7 +35,7 @@ export class BorrowBillController {
     }
 
     @Put('/borrowbill/:id')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([15]))
     @UseBefore(validationMiddleware(CreateBorrowBillDto, 'body', true))
     async update(@Param('id') billId: number, @Body() bill: UpdateBorrowBillDto) {
         const updateBill = this.borrowBillService.updateBorrowBill(billId, bill)
@@ -43,7 +43,7 @@ export class BorrowBillController {
     }
 
     @Delete('/borrowbill/:id')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([14]))
     async delete(@Param('id') billId: number) {
         const deleteBill = this.borrowBillService.deleteBorrowBill(billId)
         return { data: deleteBill, message: 'deleted' };

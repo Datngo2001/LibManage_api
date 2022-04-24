@@ -15,7 +15,7 @@ export class BorrowRegisterController {
     borrowBillService = new BorrowBillService();
 
     @Get('/borrowregister')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([12]))
     @OpenAPI({ summary: '' })
     async getAll() {
         const borrowRegisters = await this.borrowRegisterService.findAllBorrowRegister()
@@ -23,7 +23,7 @@ export class BorrowRegisterController {
     }
 
     @Get('/borrowregister/:id')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([12]))
     @OpenAPI({ summary: '' })
     async getOne(@Param('id') registerId: number) {
         const borrowRegister = await this.borrowRegisterService.findBorrowRegisterById(registerId)
@@ -31,7 +31,7 @@ export class BorrowRegisterController {
     }
 
     @Post('/borrowregister')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([20]))
     @UseBefore(validationMiddleware(CreateBorrowRegisterDto, 'body'))
     @HttpCode(201)
     async create(@Req() req: RequestWithUser, @Body() register: CreateBorrowRegisterDto) {
@@ -40,7 +40,7 @@ export class BorrowRegisterController {
     }
 
     @Put('/borrowregister/:id')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([13, 17]))
     @UseBefore(validationMiddleware(CreateBorrowRegisterDto, 'body', true))
     async update(@Param('id') registerId: number, @Body() register: UpdateBorrowRegisterDto) {
         const borrowRegister = await this.borrowRegisterService.updateBorrowRegister(registerId, register)
@@ -54,7 +54,7 @@ export class BorrowRegisterController {
     }
 
     @Delete('/borrowregister/:id')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([14]))
     async delete(@Param('id') registerId: number) {
         const borrowRegister = await this.borrowRegisterService.deleteBorrowRegister(registerId)
         return { data: borrowRegister, message: 'deleted' };
