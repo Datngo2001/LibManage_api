@@ -26,6 +26,10 @@ class BorrowRegisterService {
         if (isEmpty(BorrowRegisterData)) throw new HttpException(400, "You're not BorrowRegisterData");
 
         const avalableIds = await this.avalableBookIds(BorrowRegisterData.bookIds)
+        if (avalableIds.length != BorrowRegisterData.bookIds.length) {
+            throw new HttpException(409, "One or all of your books not avalable");
+        }
+
         const books = avalableIds.map(id => { return { id: id } })
         const createBorrowRegisterData: BorrowRegister = await this.BorrowRegisters.create({
             data: {
@@ -51,6 +55,10 @@ class BorrowRegisterService {
         if (!findBorrowRegister) throw new HttpException(409, "Your book title not exist");
 
         const avalableIds = await this.avalableBookIds(BorrowRegisterData.bookIds)
+        if (avalableIds.length != BorrowRegisterData.bookIds.length) {
+            throw new HttpException(409, "One or all of your books not avalable");
+        }
+
         const books = avalableIds.map(id => { return { id: id } })
         const updateBorrowRegisterData = await this.BorrowRegisters.update({
             where: { id: BorrowRegisterId },

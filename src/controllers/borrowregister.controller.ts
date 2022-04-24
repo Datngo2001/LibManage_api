@@ -1,5 +1,6 @@
 import { CreateBorrowBillDto } from "@/dtos/borrowbill.dto";
 import { CreateBorrowRegisterDto, UpdateBorrowRegisterDto } from "@/dtos/borrowregister.dto";
+import { HttpException } from "@/exceptions/HttpException";
 import { RequestWithUser } from "@/interfaces/auth.interface";
 import authMiddleware from "@/middlewares/auth.middleware";
 import { validationMiddleware } from "@/middlewares/validation.middleware";
@@ -47,6 +48,9 @@ export class BorrowRegisterController {
         if (borrowRegister.isConfirmed == true) {
             var bill = register as CreateBorrowBillDto;
             const createdBill = await this.borrowBillService.createBorrowBill(bill)
+            if (createdBill) {
+                throw new HttpException(500, `Something error went create borrowbill`);
+            }
             const deletedRegister = await this.borrowRegisterService.deleteBorrowRegister(registerId)
             return { data: { createdBill, deletedRegister }, message: 'created bill and deleted register' };
         }
