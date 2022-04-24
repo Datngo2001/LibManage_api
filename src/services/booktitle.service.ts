@@ -49,8 +49,11 @@ class BookTitleService {
     public async updateBookTitle(BookTitleId: number, BookTitleData: CreateBookTitleDto): Promise<BookTitle> {
         if (isEmpty(BookTitleData)) throw new HttpException(400, "Empty update data");
 
-        const findBookTitle: BookTitle = await this.bookTitles.findUnique({ where: { id: BookTitleId } })
+        var findBookTitle: BookTitle = await this.bookTitles.findUnique({ where: { id: BookTitleId } })
         if (!findBookTitle) throw new HttpException(409, "Your book title not exist");
+
+        findBookTitle = await this.bookTitles.findUnique({ where: { title: BookTitleData.title } });
+        if (findBookTitle) throw new HttpException(409, `Your Book Title ${BookTitleData.title} already exists`);
 
         const categorys = BookTitleData.categoryIds.map(id => { return { id: id } })
         const books = BookTitleData.bookIds.map(id => { return { id: id } })

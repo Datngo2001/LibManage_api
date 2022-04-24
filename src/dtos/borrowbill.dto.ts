@@ -6,7 +6,19 @@ export class CreateBorrowBillDto {
 
     @IsArray()
     public bookIds: number[]
+}
+
+
+export class UpdateBorrowBillDto {
+    @IsNumber()
+    public userId: number
+
+    @IsArray()
+    public bookIds: number[]
 
     @IsBoolean()
     public isReturned: boolean
+
+    @IsArray()
+    public notifyIds: number[]
 }
