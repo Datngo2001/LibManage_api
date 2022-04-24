@@ -25,13 +25,22 @@ export class BookTitleController {
         return { data: bookTitle, message: 'OK' };
     }
 
-    @Get('/booktitle/:id')
+    @Get('/booktitle/:id/books')
     @UseBefore(authMiddleware([5]))
     @OpenAPI({ summary: '' })
-    async getOneIncludeBooks(@Param('id') bookTitleId: number) {
+    async getIncludeBooks(@Param('id') bookTitleId: number) {
         const bookTitle = await this.bookTitleService.findBookTitleByIdIncludeBooks(bookTitleId);
         return { data: bookTitle, message: 'OK' };
     }
+
+    @Get('/booktitle/:id/books/avalable')
+    @UseBefore(authMiddleware([5]))
+    @OpenAPI({ summary: '' })
+    async getAvalableBooks(@Param('id') bookTitleId: number) {
+        const bookTitle = await this.bookTitleService.findAvailableBooks(bookTitleId);
+        return { data: bookTitle, message: 'OK' };
+    }
+
 
     @Post('/booktitle')
     @UseBefore(authMiddleware([6]))
