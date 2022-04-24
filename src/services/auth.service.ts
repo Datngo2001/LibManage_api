@@ -104,7 +104,6 @@ class AuthService {
         permisionCodes.push(p.id)
       })
     })
-    console.log(permisionCodes)
 
     return permisionCodes
   }

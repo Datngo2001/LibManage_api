@@ -49,3 +49,14 @@ export class UpdateUserDto {
   @IsString()
   public lname: string;
 }
+
+export class UpdateUserProfileDto {
+  @IsString()
+  public password: string;
+
+  @IsString()
+  public fname: string;
+
+  @IsString()
+  public lname: string;
+}

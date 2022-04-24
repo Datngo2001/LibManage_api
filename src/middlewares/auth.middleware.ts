@@ -22,8 +22,6 @@ const authMiddleware = (endpointPerCodes: number[]) => {
 
         if (findUser) {
           var foundCode = endpointPerCodes.find(endpointPerCode => userPermisionCodes.includes(endpointPerCode))
-          console.log(foundCode)
-          console.log(userPermisionCodes)
           if (foundCode || endpointPerCodes.length == 0) {
             req.user = findUser;
             next();

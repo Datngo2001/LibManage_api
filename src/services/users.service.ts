@@ -1,5 +1,5 @@
 import { hash } from 'bcrypt';
-import { CreateUserDto, UpdateUserDto } from '@dtos/users.dto';
+import { CreateUserDto, UpdateUserDto, UpdateUserProfileDto } from '@dtos/users.dto';
 import { HttpException } from '@exceptions/HttpException';
 import { User } from '@prisma/client';
 import { isEmpty } from '@utils/util';
@@ -66,6 +66,26 @@ class UserService {
 
     return updateUserData;
   }
+
+  public async updateUserProfile(userId: number, userData: UpdateUserProfileDto): Promise<User> {
+    if (isEmpty(userData)) throw new HttpException(400, "You're not userData");
+
+    const findUser: User = await this.users.findUnique({ where: { id: userId } })
+    if (!findUser) throw new HttpException(409, "You're not user");
+
+    const hashedPassword = await hash(userData.password, 10);
+    const updateUserData: User = await this.users.update({
+      where: { id: userId },
+      data: {
+        password: hashedPassword,
+        fname: userData.fname,
+        lname: userData.lname,
+      }
+    });
+
+    return updateUserData;
+  }
+
 
   public async deleteUser(userId: number): Promise<User> {
     const findUser: User = await this.users.findUnique({ where: { id: userId } });
