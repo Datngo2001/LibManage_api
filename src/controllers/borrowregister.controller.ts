@@ -1,14 +1,18 @@
+import { CreateBorrowBillDto } from "@/dtos/borrowbill.dto";
 import { CreateBorrowRegisterDto, UpdateBorrowRegisterDto } from "@/dtos/borrowregister.dto";
 import { RequestWithUser } from "@/interfaces/auth.interface";
 import authMiddleware from "@/middlewares/auth.middleware";
 import { validationMiddleware } from "@/middlewares/validation.middleware";
+import BorrowBillService from "@/services/borrowbill.service";
 import BorrowRegisterService from "@/services/borrowregister.service";
+import { BorrowBill } from "@prisma/client";
 import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Put, Req, UseBefore } from "routing-controllers";
 import { OpenAPI } from "routing-controllers-openapi";
 
 @Controller('/api')
 export class BorrowRegisterController {
     borrowRegisterService = new BorrowRegisterService();
+    borrowBillService = new BorrowBillService();
 
     @Get('/borrowregister')
     @UseBefore(authMiddleware([]))
@@ -40,6 +44,12 @@ export class BorrowRegisterController {
     @UseBefore(validationMiddleware(CreateBorrowRegisterDto, 'body', true))
     async update(@Param('id') registerId: number, @Body() register: UpdateBorrowRegisterDto) {
         const borrowRegister = await this.borrowRegisterService.updateBorrowRegister(registerId, register)
+        if (borrowRegister.isConfirmed == true) {
+            var bill = register as CreateBorrowBillDto;
+            const createdBill = await this.borrowBillService.createBorrowBill(bill)
+            const deletedRegister = await this.borrowRegisterService.deleteBorrowRegister(registerId)
+            return { data: { createdBill, deletedRegister }, message: 'created bill and deleted register' };
+        }
         return { data: borrowRegister, message: 'updated' };
     }
 

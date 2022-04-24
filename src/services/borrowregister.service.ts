@@ -3,9 +3,11 @@ import { BorrowRegister } from '@prisma/client';
 import { isEmpty } from '@utils/util';
 import prisma from '@/dbclient';
 import { CreateBorrowRegisterDto, UpdateBorrowRegisterDto } from '@/dtos/borrowregister.dto';
+import BorrowBillService from './borrowbill.service';
 
 class BorrowRegisterService {
     public BorrowRegisters = prisma.borrowRegister;
+    borrowBillService = new BorrowBillService()
 
     public async findAllBorrowRegister(): Promise<BorrowRegister[]> {
         const BorrowRegisters: BorrowRegister[] = await this.BorrowRegisters.findMany();

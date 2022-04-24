@@ -1,4 +1,4 @@
-import { IsString } from "class-validator"
+import { IsNumber, IsString } from "class-validator"
 
 export class CreateBorrowNotifyDto {
     @IsString()
@@ -9,4 +9,7 @@ export class CreateBorrowNotifyDto {
 
     @IsString()
     public isRead: string
+
+    @IsNumber()
+    public borrowBillId: number
 }
