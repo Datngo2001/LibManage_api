@@ -43,7 +43,7 @@ export class CategoryController {
     }
 
     @Delete('/category/:id')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([6, 8, 10]))
     async delete(@Param('id') categoryId: number) {
         const deletedCategory = await this.categoryService.deleteCategory(categoryId)
         return { data: deletedCategory, message: 'deleted' };

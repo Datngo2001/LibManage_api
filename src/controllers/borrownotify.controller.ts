@@ -10,7 +10,7 @@ export class BorrowNotifyController {
     borrowNotify = new BorrowNotifyService()
 
     @Get('/borrownotify')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([16]))
     @OpenAPI({ summary: '' })
     async getAll() {
         const notifies = await this.borrowNotify.findAllBorrowNotify()
@@ -18,7 +18,7 @@ export class BorrowNotifyController {
     }
 
     @Get('/borrownotify/:id')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([16]))
     @OpenAPI({ summary: '' })
     async getOne(@Param('id') notifyId: number) {
         const notify = await this.borrowNotify.findBorrowNotifyById(notifyId)
@@ -26,7 +26,7 @@ export class BorrowNotifyController {
     }
 
     @Post('/borrownotify')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([16]))
     @UseBefore(validationMiddleware(CreateBorrowNotifyDto, 'body'))
     @HttpCode(201)
     async create(@Body() notify: CreateBorrowNotifyDto) {
@@ -35,7 +35,7 @@ export class BorrowNotifyController {
     }
 
     @Put('/borrownotify/:id')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([16]))
     @UseBefore(validationMiddleware(CreateBorrowNotifyDto, 'body', true))
     async update(@Param('id') notifyId: number, @Body() notify: CreateBorrowNotifyDto) {
         const updateNotify = await this.borrowNotify.updateBorrowNotify(notifyId, notify)
@@ -43,7 +43,7 @@ export class BorrowNotifyController {
     }
 
     @Delete('/borrownotify/:id')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([16]))
     async delete(@Param('id') notifyId: number) {
         const deleteNotify = await this.borrowNotify.deleteBorrowNotify(notifyId)
         return { data: deleteNotify, message: 'deleted' };

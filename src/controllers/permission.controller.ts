@@ -9,7 +9,7 @@ export class PermissionController {
     PermissionService = new PermissionService();
 
     @Get('/permission')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([1, 2, 3, 4]))
     @OpenAPI({ summary: '' })
     async getAll() {
         const Permissions = await this.PermissionService.findAllPermission();
@@ -17,7 +17,7 @@ export class PermissionController {
     }
 
     @Get('/permission/:id')
-    @UseBefore(authMiddleware([]))
+    @UseBefore(authMiddleware([1, 2, 3, 4]))
     @OpenAPI({ summary: '' })
     async getOne(@Param('id') categoryId: number) {
         const Permission = await this.PermissionService.findPermissionById(categoryId);

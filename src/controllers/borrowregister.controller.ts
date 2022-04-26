@@ -6,8 +6,7 @@ import authMiddleware from "@/middlewares/auth.middleware";
 import { validationMiddleware } from "@/middlewares/validation.middleware";
 import BorrowBillService from "@/services/borrowbill.service";
 import BorrowRegisterService from "@/services/borrowregister.service";
-import { BorrowBill } from "@prisma/client";
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Put, Req, UseBefore } from "routing-controllers";
+import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Req, UseBefore } from "routing-controllers";
 import { OpenAPI } from "routing-controllers-openapi";
 
 @Controller('/api')
