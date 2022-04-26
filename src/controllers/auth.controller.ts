@@ -14,7 +14,7 @@ export class AuthController {
 
   @Get('/me')
   @UseBefore(authMiddleware([]))
-  @OpenAPI({ summary: 'Check user login state' })
+  @OpenAPI({ summary: 'Check user login states' })
   async me(@Req() req: RequestWithUser) {
     const userData: any = req.user;
     userData.password = null
