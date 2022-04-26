@@ -44,7 +44,7 @@ class AuthService {
     const isPasswordMatching: boolean = await compare(userData.password, findUser.password);
     if (!isPasswordMatching) throw new HttpException(409, "You're password not matching");
 
-    const permissionCodes = await this.getPermissionCode(findUser);
+    const permissionCodes = await this.getPermissionCode(findUser.id);
 
     const tokenData = this.createToken(findUser, permissionCodes);
     const cookie = this.createCookie(tokenData);
@@ -90,11 +90,11 @@ class AuthService {
     }
   }
 
-  public async getPermissionCode(findUser: User) {
+  public async getPermissionCode(userId: number) {
     var groups = await prisma.group.findMany({
       select: { permissions: { select: { id: true } } },
       where: {
-        users: { some: { id: { equals: findUser.id } } }
+        users: { some: { id: { equals: userId } } }
       }
     })
 

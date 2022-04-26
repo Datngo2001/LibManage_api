@@ -16,8 +16,10 @@ export class AuthController {
   @UseBefore(authMiddleware([]))
   @OpenAPI({ summary: 'Check user login state' })
   async me(@Req() req: RequestWithUser) {
-    const userData: User = req.user;
+    const userData: any = req.user;
     userData.password = null
+    const permissionCodes = await this.authService.getPermissionCode(userData.id);
+    userData.permissionCodes = permissionCodes
     return { data: userData, message: 'OK' };
   }
 
@@ -36,10 +38,8 @@ export class AuthController {
 
     res.setHeader('Set-Cookie', [cookie]);
 
-    var sesponseData: any = {}
-    sesponseData.id = findUser.id
-    sesponseData.username = findUser.username
-    sesponseData.email = findUser.email
+    var sesponseData: any = findUser
+    sesponseData.password = null
     sesponseData.permissionCodes = permissionCodes
 
     return { data: sesponseData, message: 'login' };
