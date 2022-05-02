@@ -1,7 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import { hash } from "bcrypt";
-import { group } from "console";
-import { connect } from "http2";
 
 let prisma = new PrismaClient()
 const users = prisma.user;

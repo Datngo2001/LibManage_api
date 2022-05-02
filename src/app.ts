@@ -14,6 +14,7 @@ import { NODE_ENV, PORT, LOG_FORMAT, ORIGIN, CREDENTIALS, DEVORIGIN, CLIENT } fr
 import errorMiddleware from '@middlewares/error.middleware';
 import { logger, stream } from '@utils/logger';
 import path from 'path';
+import SeedData from './utils/seedData';
 
 class App {
   public app: express.Application;
@@ -29,7 +30,9 @@ class App {
     this.initializeRoutes(Controllers);
     this.initializeSwagger(Controllers);
     this.initializeErrorHandling();
-    this.initializeIndex()
+    this.initializeIndex();
+    const seeder = new SeedData(this.env);
+    seeder.BeginSeeding();
   }
 
   public listen() {
