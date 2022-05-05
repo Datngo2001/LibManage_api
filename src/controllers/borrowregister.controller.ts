@@ -42,6 +42,7 @@ export class BorrowRegisterController {
     @Put('/borrowregister/:id')
     @UseBefore(authMiddleware([13, 17]))
     @UseBefore(validationMiddleware(CreateBorrowRegisterDto, 'body', true))
+    @OpenAPI({ summary: 'Update borrow reigister, when isConfirm == true create bill and delete current register' })
     async update(@Param('id') registerId: number, @Body() register: UpdateBorrowRegisterDto) {
         const borrowRegister = await this.borrowRegisterService.updateBorrowRegister(registerId, register)
         if (borrowRegister.isConfirmed == true) {

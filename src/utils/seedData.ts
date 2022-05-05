@@ -7,6 +7,8 @@ export default class SeedData {
     private readonly users = prisma.user;
     private readonly permissions = prisma.permission;
     private readonly groups = prisma.group;
+    private readonly bookTitles = prisma.bookTitle;
+    private readonly categories = prisma.category;
 
     constructor(env: any) {
         this.env = env
@@ -32,7 +34,8 @@ export default class SeedData {
         console.log(admin)
 
         if (this.env == 'development') {
-
+            await this.CreateCategories();
+            await this.CreateBookTitle();
         }
     }
 
@@ -205,6 +208,51 @@ export default class SeedData {
                     connect: { id: 1 }
                 }
             }
+        })
+    }
+
+    private async CreateCategories() {
+        return await this.categories.createMany({
+            data: [
+                {
+                    name: "Romance"
+                },
+                {
+                    name: "Methematic"
+                },
+                {
+                    name: "Science"
+                },
+                {
+                    name: "Mobile Programming"
+                },
+                {
+                    name: "Web Programming"
+                },
+            ]
+        })
+    }
+
+    private async CreateBookTitle() {
+        return await this.bookTitles.createMany({
+            data: [
+                {
+                    title: "Calculus 1",
+                    author: "Dat Ngo",
+                },
+                {
+                    title: "ASP.NET",
+                    author: "Dat Ngo",
+                },
+                {
+                    title: "React",
+                    author: "Dat Ngo",
+                },
+                {
+                    title: "NodeJS",
+                    author: "Dat Ngo",
+                },
+            ]
         })
     }
 }

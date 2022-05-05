@@ -27,7 +27,7 @@ export class BookTitleController {
 
     @Get('/booktitle/:id/books')
     @UseBefore(authMiddleware([5]))
-    @OpenAPI({ summary: '' })
+    @OpenAPI({ summary: 'Return all books from the booktitle' })
     async getIncludeBooks(@Param('id') bookTitleId: number) {
         const bookTitle = await this.bookTitleService.findBookTitleByIdIncludeBooks(bookTitleId);
         return { data: bookTitle, message: 'OK' };
@@ -35,7 +35,7 @@ export class BookTitleController {
 
     @Get('/booktitle/:id/books/avalable')
     @UseBefore(authMiddleware([5]))
-    @OpenAPI({ summary: '' })
+    @OpenAPI({ summary: 'Return all book that not be borrowed' })
     async getAvalableBooks(@Param('id') bookTitleId: number) {
         const bookTitle = await this.bookTitleService.findAvailableBooks(bookTitleId);
         return { data: bookTitle, message: 'OK' };
