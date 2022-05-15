@@ -105,6 +105,9 @@ export default class SeedData {
                 {
                     name: 'Check book borrowing status'
                 },
+                {
+                    name: 'update profile'
+                }
             ]
         })
     }

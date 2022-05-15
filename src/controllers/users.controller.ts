@@ -1,6 +1,6 @@
 import { Controller, Param, Body, Get, Post, Put, Delete, HttpCode, UseBefore, Req } from 'routing-controllers';
 import { OpenAPI } from 'routing-controllers-openapi';
-import { CreateUserDto } from '@dtos/users.dto';
+import { CreateUserDto, UpdateUserProfileDto } from '@dtos/users.dto';
 import { User } from '@prisma/client';
 import userService from '@services/users.service';
 import { validationMiddleware } from '@middlewares/validation.middleware';
@@ -65,9 +65,10 @@ export class UsersController {
 
   @Put('/users/profile')
   @UseBefore(authMiddleware([22]))
-  @UseBefore(validationMiddleware(CreateUserDto, 'body', true))
+  @UseBefore(validationMiddleware(UpdateUserProfileDto, 'body', true))
   @OpenAPI({ summary: 'Update a user profile' })
-  async updateUserProfile(@Req() req: RequestWithUser, @Body() userData: CreateUserDto) {
+  async updateUserProfile(@Req() req: RequestWithUser, @Body() userData: UpdateUserProfileDto) {
+    console.log("")
     const updateUserData: User = await this.userService.updateUserProfile(req.user.id, userData);
     return { data: updateUserData, message: 'updated' };
   }
