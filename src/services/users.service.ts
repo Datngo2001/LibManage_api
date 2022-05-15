@@ -82,7 +82,7 @@ class UserService {
     return createUserData;
   }
 
-  public async updateUser(userId: number, userData: UpdateUserDto): Promise<User> {
+  public async updateUser(userId: number, userData: CreateUserDto): Promise<User> {
     if (isEmpty(userData)) throw new HttpException(400, "You're not userData");
 
     const findUser: User = await this.users.findUnique({ where: { id: userId } })
@@ -106,7 +106,7 @@ class UserService {
     return updateUserData;
   }
 
-  public async updateUserProfile(userId: number, userData: UpdateUserProfileDto): Promise<User> {
+  public async updateProfile(userId: number, userData: UpdateUserProfileDto): Promise<User> {
     if (isEmpty(userData)) throw new HttpException(400, "You're not userData");
 
     const findUser: User = await this.users.findUnique({ where: { id: userId } })

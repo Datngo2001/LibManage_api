@@ -54,22 +54,23 @@ export class UsersController {
     return { data: createUserData, message: 'created' };
   }
 
+  @Put('/users/profile')
+  @UseBefore(authMiddleware([22]))
+  @UseBefore(validationMiddleware(UpdateUserProfileDto, 'body', true))
+  @OpenAPI({ summary: 'Update a user profile' })
+  async updateProfile(@Req() req: RequestWithUser, @Body() userData: UpdateUserProfileDto) {
+    console.log("update profile")
+    const updateUserData: User = await this.userService.updateProfile(req.user.id, userData);
+    return { data: updateUserData, message: 'updated' };
+  }
+
   @Put('/users/:id')
   @UseBefore(authMiddleware([4]))
   @UseBefore(validationMiddleware(CreateUserDto, 'body', true))
   @OpenAPI({ summary: 'Update a user' })
   async updateUser(@Param('id') userId: number, @Body() userData: CreateUserDto) {
+    console.log("update user")
     const updateUserData: User = await this.userService.updateUser(userId, userData);
-    return { data: updateUserData, message: 'updated' };
-  }
-
-  @Put('/users/profile')
-  @UseBefore(authMiddleware([22]))
-  @UseBefore(validationMiddleware(UpdateUserProfileDto, 'body', true))
-  @OpenAPI({ summary: 'Update a user profile' })
-  async updateUserProfile(@Req() req: RequestWithUser, @Body() userData: UpdateUserProfileDto) {
-    console.log("")
-    const updateUserData: User = await this.userService.updateUserProfile(req.user.id, userData);
     return { data: updateUserData, message: 'updated' };
   }
 
