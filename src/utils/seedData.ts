@@ -139,6 +139,7 @@ export default class SeedData {
                         { id: 19 },
                         { id: 20 },
                         { id: 21 },
+                        { id: 22 },
                     ]
                 }
             }

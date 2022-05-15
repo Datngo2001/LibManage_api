@@ -42,9 +42,6 @@
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.5"
   },
-  "prisma": {
-    "seed": "ts-node ./prisma/seed.ts"
-  },
   "devDependencies": {
     "@swc/cli": "^0.1.51",
     "@swc/core": "^1.2.108",
