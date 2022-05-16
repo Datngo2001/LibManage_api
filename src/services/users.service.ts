@@ -118,16 +118,29 @@ class UserService {
     const isPasswordMatching: boolean = await compare(userData.password, findUser.password);
     if (!isPasswordMatching) throw new HttpException(409, "Your old password not matching");
 
-    const hashedPassword = await hash(userData.newPassword, 10);
-    const updateUserData: User = await this.users.update({
-      where: { id: userId },
-      data: {
-        password: hashedPassword,
-        fname: userData.fname,
-        lname: userData.lname,
-        email: userData.email
-      }
-    });
+    var updateUserData: User;
+
+    if (userData.newPassword === "") {
+      updateUserData = await this.users.update({
+        where: { id: userId },
+        data: {
+          fname: userData.fname,
+          lname: userData.lname,
+          email: userData.email
+        }
+      });
+    } else {
+      const hashedPassword = await hash(userData.newPassword, 10);
+      updateUserData = await this.users.update({
+        where: { id: userId },
+        data: {
+          password: hashedPassword,
+          fname: userData.fname,
+          lname: userData.lname,
+          email: userData.email
+        }
+      });
+    }
 
     return updateUserData;
   }
