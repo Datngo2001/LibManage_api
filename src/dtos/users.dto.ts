@@ -1,4 +1,4 @@
-import { IsArray, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsEmail, IsNumber, IsString } from 'class-validator';
 
 export class LoginDto {
   @IsString()
@@ -31,6 +31,9 @@ export class CreateUserDto {
 
   @IsString()
   public lname: string;
+
+  @IsEmail()
+  public email: string;
 }
 
 export class UpdateUserDto {
@@ -48,6 +51,9 @@ export class UpdateUserDto {
 
   @IsString()
   public lname: string;
+
+  @IsEmail()
+  public email: string;
 }
 
 export class UpdateUserProfileDto {
@@ -55,8 +61,14 @@ export class UpdateUserProfileDto {
   public password: string;
 
   @IsString()
+  public newPassword: string;
+
+  @IsString()
   public fname: string;
 
   @IsString()
   public lname: string;
+
+  @IsEmail()
+  public email: string;
 }

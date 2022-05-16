@@ -1,10 +1,11 @@
-import { hash } from 'bcrypt';
+import { compare, hash } from 'bcrypt';
 import { CreateUserDto, UpdateUserDto, UpdateUserProfileDto } from '@dtos/users.dto';
 import { HttpException } from '@exceptions/HttpException';
 import { BorrowNotify, User } from '@prisma/client';
 import { isEmpty } from '@utils/util';
 import prisma from '@/dbclient';
 import BorrowBillService from './borrowbill.service';
+import { email } from 'envalid';
 
 class UserService {
   public users = prisma.user;
@@ -75,7 +76,8 @@ class UserService {
         lname: userData.lname,
         groups: {
           connect: groups
-        }
+        },
+        email: userData.email
       }
     });
 
@@ -99,7 +101,8 @@ class UserService {
         lname: userData.lname,
         groups: {
           set: groups
-        }
+        },
+        email: userData.email
       }
     });
 
@@ -112,13 +115,17 @@ class UserService {
     const findUser: User = await this.users.findUnique({ where: { id: userId } })
     if (!findUser) throw new HttpException(409, "You're not user");
 
-    const hashedPassword = await hash(userData.password, 10);
+    const isPasswordMatching: boolean = await compare(userData.password, findUser.password);
+    if (!isPasswordMatching) throw new HttpException(409, "Your old password not matching");
+
+    const hashedPassword = await hash(userData.newPassword, 10);
     const updateUserData: User = await this.users.update({
       where: { id: userId },
       data: {
         password: hashedPassword,
         fname: userData.fname,
         lname: userData.lname,
+        email: userData.email
       }
     });
 
