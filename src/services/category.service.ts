@@ -44,8 +44,8 @@ class CategoryService {
         var findCategory: Category = await this.Categorys.findUnique({ where: { id: CategoryId } })
         if (!findCategory) throw new HttpException(409, "Your book title not exist");
 
-        findCategory = await this.Categorys.findUnique({ where: { name: CategoryData.name } });
-        if (findCategory) throw new HttpException(409, `Your name ${CategoryData.name} already exists`);
+        // findCategory = await this.Categorys.findUnique({ where: { name: CategoryData.name } });
+        // if (findCategory) throw new HttpException(409, `Your name ${CategoryData.name} already exists`);
 
         const bookTitles = CategoryData.bookTitleIds.map(id => { return { id: id } })
         const updateCategoryData = await this.Categorys.update({

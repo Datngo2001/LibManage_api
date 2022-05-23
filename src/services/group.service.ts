@@ -17,9 +17,7 @@ class GroupService {
             where: { id: GroupId }, include: { permissions: true, users: true }
         })
         if (!findGroup) throw new HttpException(409, "You're not Group");
-        findGroup.users.forEach(user => {
-            user.password = ""
-        });
+
         return findGroup;
     }
 
@@ -52,8 +50,8 @@ class GroupService {
         var findGroup: Group = await this.Groups.findUnique({ where: { id: GroupId } })
         if (!findGroup) throw new HttpException(409, "Your Group title not exist");
 
-        findGroup = await this.Groups.findUnique({ where: { name: GroupData.name } });
-        if (findGroup) throw new HttpException(409, `Your name ${GroupData.name} already exists`);
+        // findGroup = await this.Groups.findUnique({ where: { name: GroupData.name } });
+        // if (findGroup) throw new HttpException(409, `Your name ${GroupData.name} already exists`);
 
         const users = GroupData.userIds.map(id => { return { id: id } })
         const permissions = GroupData.permissionIds.map(id => { return { id: id } })
