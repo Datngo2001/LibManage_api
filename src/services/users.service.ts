@@ -13,7 +13,12 @@ class UserService {
   public borrowBillService = new BorrowBillService();
 
   public async findAllUser(): Promise<User[]> {
-    const users: User[] = await this.users.findMany();
+    const users: User[] = await this.users.findMany({
+      orderBy: {
+        createdAt: "desc",
+        isActive: "asc"
+      }
+    });
     return users;
   }
 

@@ -8,7 +8,11 @@ class CategoryService {
     public Categorys = prisma.category;
 
     public async findAllCategory(): Promise<Category[]> {
-        const Categorys: Category[] = await this.Categorys.findMany();
+        const Categorys: Category[] = await this.Categorys.findMany({
+            orderBy: {
+                createdAt: "desc"
+            }
+        });
         return Categorys;
     }
 

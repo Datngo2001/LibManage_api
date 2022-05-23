@@ -8,7 +8,11 @@ class GroupService {
     public Groups = prisma.group;
 
     public async findAllGroup(): Promise<Group[]> {
-        const Groups: Group[] = await this.Groups.findMany();
+        const Groups: Group[] = await this.Groups.findMany({
+            orderBy: {
+                createdAt: "desc"
+            }
+        });
         return Groups;
     }
 

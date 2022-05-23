@@ -10,7 +10,11 @@ class BookTitleService {
     public books = prisma.book;
 
     public async findAllBookTitle(): Promise<BookTitle[]> {
-        const BookTitles: BookTitle[] = await this.bookTitles.findMany();
+        const BookTitles: BookTitle[] = await this.bookTitles.findMany({
+            orderBy: {
+                createdAt: "desc"
+            }
+        });
         return BookTitles;
     }
 

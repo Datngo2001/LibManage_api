@@ -11,7 +11,11 @@ class BorrowRegisterService {
     borrowBillService = new BorrowBillService()
 
     public async findAllBorrowRegister(): Promise<BorrowRegister[]> {
-        const BorrowRegisters: BorrowRegister[] = await this.BorrowRegisters.findMany();
+        const BorrowRegisters: BorrowRegister[] = await this.BorrowRegisters.findMany({
+            orderBy: {
+                planReturnDate: "desc"
+            }
+        });
         return BorrowRegisters;
     }
 

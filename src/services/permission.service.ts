@@ -7,7 +7,11 @@ class PermissionService {
     public Permissions = prisma.permission;
 
     public async findAllPermission(): Promise<Permission[]> {
-        const Permissions: Permission[] = await this.Permissions.findMany();
+        const Permissions: Permission[] = await this.Permissions.findMany({
+            orderBy: {
+                createdAt: "desc"
+            }
+        });
         return Permissions;
     }
 

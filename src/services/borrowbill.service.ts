@@ -10,7 +10,11 @@ class BorrowBillService {
     public BorrowBills = prisma.borrowBill;
 
     public async findAllBorrowBill(): Promise<BorrowBill[]> {
-        const BorrowBills: BorrowBill[] = await this.BorrowBills.findMany();
+        const BorrowBills: BorrowBill[] = await this.BorrowBills.findMany({
+            orderBy: {
+                planReturnDate: "desc"
+            }
+        });
         return BorrowBills;
     }
 

@@ -8,7 +8,11 @@ class BorrowNotifyService {
     public BorrowNotifys = prisma.borrowNotify;
 
     public async findAllBorrowNotify(): Promise<BorrowNotify[]> {
-        const BorrowNotifys: BorrowNotify[] = await this.BorrowNotifys.findMany();
+        const BorrowNotifys: BorrowNotify[] = await this.BorrowNotifys.findMany({
+            orderBy: {
+                isRead: "asc"
+            }
+        });
         return BorrowNotifys;
     }
 
