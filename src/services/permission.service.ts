@@ -12,7 +12,7 @@ class PermissionService {
     }
 
     public async findPermissionById(PermissionId: number): Promise<Permission> {
-        const findPermission: Permission = await this.Permissions.findUnique({ where: { id: PermissionId } })
+        const findPermission: Permission = await this.Permissions.findUnique({ where: { id: PermissionId }, include: { groups: true } })
         if (!findPermission) throw new HttpException(409, "You're not Permission");
 
         return findPermission;

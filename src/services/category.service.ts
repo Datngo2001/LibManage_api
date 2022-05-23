@@ -13,7 +13,7 @@ class CategoryService {
     }
 
     public async findCategoryById(CategoryId: number): Promise<Category> {
-        const findCategory: Category = await this.Categorys.findUnique({ where: { id: CategoryId } })
+        const findCategory: Category = await this.Categorys.findUnique({ where: { id: CategoryId }, include: { bookTitles: true } })
         if (!findCategory) throw new HttpException(409, "You're not Category");
 
         return findCategory;

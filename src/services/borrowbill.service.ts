@@ -15,7 +15,7 @@ class BorrowBillService {
     }
 
     public async findBorrowBillById(BorrowBillId: number): Promise<BorrowBill> {
-        const findBorrowBill: BorrowBill = await this.BorrowBills.findUnique({ where: { id: BorrowBillId } })
+        const findBorrowBill: BorrowBill = await this.BorrowBills.findUnique({ where: { id: BorrowBillId }, include: { books: true, user: true } })
         if (!findBorrowBill) throw new HttpException(409, "You're not BorrowBill");
 
         return findBorrowBill;

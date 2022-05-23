@@ -24,7 +24,7 @@ export class UsersController {
   @UseBefore(authMiddleware([3]))
   @OpenAPI({ summary: 'Return find a user' })
   async getUserById(@Param('id') userId: number) {
-    const findOneUserData: User = await this.userService.findUserById(userId);
+    const findOneUserData: User = await this.userService.findUserByIdIncludeAllData(userId);
     return { data: findOneUserData, message: 'findOne' };
   }
 

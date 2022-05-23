@@ -13,7 +13,7 @@ class BorrowNotifyService {
     }
 
     public async findBorrowNotifyById(BorrowNotifyId: number): Promise<BorrowNotify> {
-        const findBorrowNotify: BorrowNotify = await this.BorrowNotifys.findUnique({ where: { id: BorrowNotifyId } })
+        const findBorrowNotify: BorrowNotify = await this.BorrowNotifys.findUnique({ where: { id: BorrowNotifyId }, include: { BorrowBill: true } })
         if (!findBorrowNotify) throw new HttpException(409, "You're not BorrowNotify");
 
         return findBorrowNotify;

@@ -16,7 +16,7 @@ class BorrowRegisterService {
     }
 
     public async findBorrowRegisterById(BorrowRegisterId: number): Promise<BorrowRegister> {
-        const findBorrowRegister: BorrowRegister = await this.BorrowRegisters.findUnique({ where: { id: BorrowRegisterId } })
+        const findBorrowRegister: BorrowRegister = await this.BorrowRegisters.findUnique({ where: { id: BorrowRegisterId }, include: { user: true, books: true } })
         if (!findBorrowRegister) throw new HttpException(409, "You're not BorrowRegister");
 
         return findBorrowRegister;

@@ -13,7 +13,7 @@ class BookService {
     }
 
     public async findBookById(BookId: number): Promise<Book> {
-        const findBook: Book = await this.books.findUnique({ where: { id: BookId } })
+        const findBook: Book = await this.books.findUnique({ where: { id: BookId }, include: { borrowRegisters: true, BookTitle: true, borrowBills: true } })
         if (!findBook) throw new HttpException(409, "You're not Book");
 
         return findBook;

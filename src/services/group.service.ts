@@ -13,9 +13,13 @@ class GroupService {
     }
 
     public async findGroupById(GroupId: number): Promise<Group> {
-        const findGroup: Group = await this.Groups.findUnique({ where: { id: GroupId } })
+        const findGroup: any = await this.Groups.findUnique({
+            where: { id: GroupId }, include: { permissions: true, users: true }
+        })
         if (!findGroup) throw new HttpException(409, "You're not Group");
-
+        findGroup.users.forEach(user => {
+            user.password = ""
+        });
         return findGroup;
     }
 
