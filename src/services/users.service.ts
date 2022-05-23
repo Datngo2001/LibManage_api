@@ -15,8 +15,7 @@ class UserService {
   public async findAllUser(): Promise<User[]> {
     const users: User[] = await this.users.findMany({
       orderBy: {
-        createdAt: "desc",
-        isActive: "asc"
+        createdAt: "desc"
       }
     });
     return users;
