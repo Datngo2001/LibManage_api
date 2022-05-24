@@ -3,6 +3,7 @@ import { BorrowBill } from '@prisma/client';
 import { isEmpty } from '@utils/util';
 import prisma from '@/dbclient';
 import { CreateBorrowBillDto, UpdateBorrowBillDto } from '@/dtos/borrowbill.dto';
+import getCurrentDate from '@/utils/getCurrentDate';
 
 class BorrowBillService {
     public readonly MIN_RETURN_TIME = 7
@@ -46,7 +47,7 @@ class BorrowBillService {
     }
 
     public async createOverdueNotify(userId: number): Promise<BorrowBill[]> {
-        const now = Date()
+        const now = getCurrentDate()
 
         const overdueBills = await this.BorrowBills.findMany({
             where: {
