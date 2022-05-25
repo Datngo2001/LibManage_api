@@ -5,7 +5,6 @@ import { User } from '@prisma/client';
 import userService from '@services/users.service';
 import { validationMiddleware } from '@middlewares/validation.middleware';
 import authMiddleware from '@/middlewares/auth.middleware';
-import policyList from '@/policies';
 import { RequestWithUser } from '@/interfaces/auth.interface';
 
 @Controller('/api')
