@@ -12,10 +12,10 @@ class AuthService {
   public users = prisma.user;
 
   public async signup(userData: SignupDto): Promise<User> {
-    if (isEmpty(userData)) throw new HttpException(400, "You're not userData");
+    if (isEmpty(userData)) throw new HttpException(400, "Empty Data");
 
     const findUser: User = await this.users.findUnique({ where: { username: userData.username } });
-    if (findUser) throw new HttpException(409, `You're username ${userData.username} already exists`);
+    if (findUser) throw new HttpException(409, `Your username ${userData.username} already exists`);
 
     const userGroupName = "_" + userData.username;
     const hashedPassword = await hash(userData.password, 10);
@@ -36,13 +36,13 @@ class AuthService {
   }
 
   public async login(userData: LoginDto): Promise<{ cookie: string; findUser: User, permissionCodes: number[] }> {
-    if (isEmpty(userData)) throw new HttpException(400, "You're not userData");
+    if (isEmpty(userData)) throw new HttpException(400, "Data empty");
 
     const findUser: User = await this.users.findUnique({ where: { username: userData.username } });
-    if (!findUser) throw new HttpException(409, `You're username ${userData.username} not found`);
+    if (!findUser) throw new HttpException(409, `Your username ${userData.username} not found`);
 
     const isPasswordMatching: boolean = await compare(userData.password, findUser.password);
-    if (!isPasswordMatching) throw new HttpException(409, "You're password not matching");
+    if (!isPasswordMatching) throw new HttpException(409, "Your password not matching");
 
     const permissionCodes = await this.getPermissionCode(findUser.id);
 

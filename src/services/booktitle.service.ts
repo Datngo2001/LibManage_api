@@ -20,7 +20,7 @@ class BookTitleService {
 
     public async findBookTitleById(BookTitleId: number): Promise<BookTitle> {
         const findBookTitle: BookTitle = await this.bookTitles.findUnique({ where: { id: BookTitleId } })
-        if (!findBookTitle) throw new HttpException(409, "You're not BookTitle");
+        if (!findBookTitle) throw new HttpException(409, "Your ID not exist");
 
         return findBookTitle;
     }
@@ -30,7 +30,7 @@ class BookTitleService {
             where: { id: BookTitleId },
             include: { books: true }
         })
-        if (!findBookTitle) throw new HttpException(409, "You're not BookTitle");
+        if (!findBookTitle) throw new HttpException(409, "Your ID not exist");
 
         return findBookTitle;
     }
@@ -54,7 +54,7 @@ class BookTitleService {
     }
 
     public async createBookTitle(BookTitleData: CreateBookTitleDto): Promise<BookTitle> {
-        if (isEmpty(BookTitleData)) throw new HttpException(400, "You're not BookTitleData");
+        if (isEmpty(BookTitleData)) throw new HttpException(400, "Empty BookTitleData");
 
         const findBookTitle: BookTitle = await this.bookTitles.findUnique({ where: { title: BookTitleData.title } });
         if (findBookTitle) throw new HttpException(409, `Your Book Title ${BookTitleData.title} already exists`);
@@ -85,8 +85,10 @@ class BookTitleService {
         var findBookTitle: BookTitle = await this.bookTitles.findUnique({ where: { id: BookTitleId } })
         if (!findBookTitle) throw new HttpException(409, "Your book title not exist");
 
-        findBookTitle = await this.bookTitles.findUnique({ where: { title: BookTitleData.title } });
-        if (findBookTitle) throw new HttpException(409, `Your Book Title ${BookTitleData.title} already exists`);
+        const bookTitles: BookTitle[] = await this.bookTitles.findMany({ where: { title: BookTitleData.title } })
+        if (bookTitles.some(b => b.id != BookTitleId)) {
+            throw new HttpException(409, `Title: ${BookTitleData.title} existed!`);
+        }
 
         const categorys = BookTitleData.categoryIds.map(id => { return { id: id } })
         const books = BookTitleData.bookIds.map(id => { return { id: id } })
@@ -111,7 +113,7 @@ class BookTitleService {
 
     public async deleteBookTitle(BookTitleId: number): Promise<BookTitle> {
         const findBookTitle: BookTitle = await this.bookTitles.findUnique({ where: { id: BookTitleId } });
-        if (!findBookTitle) throw new HttpException(409, "You're not BookTitle");
+        if (!findBookTitle) throw new HttpException(409, "Your ID not exist");
 
         const deleteBookTitleData = await this.bookTitles.delete({ where: { id: BookTitleId } });
         return deleteBookTitleData;
