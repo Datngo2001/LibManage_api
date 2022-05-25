@@ -104,7 +104,7 @@ class UserService {
 
     const groups = userData.groupIds.map(id => { return { id: id } })
     let updateUserData: User;
-    if (userData.password = "") {
+    if (userData.password == "") {
       updateUserData = await this.users.update({
         where: { id: userId },
         data: {
