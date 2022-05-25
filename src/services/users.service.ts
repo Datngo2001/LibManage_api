@@ -70,6 +70,9 @@ class UserService {
     const findUser: User = await this.users.findUnique({ where: { username: userData.username } });
     if (findUser) throw new HttpException(409, `Your username ${userData.username} already exists`);
 
+    const findUser2: User = await this.users.findUnique({ where: { email: userData.email } });
+    if (findUser2) throw new HttpException(409, `Your email ${userData.email} already exists`);
+
     const hashedPassword = await hash(userData.password, 10);
     const groups = userData.groupIds.map(id => { return { id: id } })
     const createUserData: User = await this.users.create({
