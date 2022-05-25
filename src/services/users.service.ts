@@ -92,10 +92,15 @@ class UserService {
   }
 
   public async updateUser(userId: number, userData: CreateUserDto): Promise<User> {
-    if (isEmpty(userData)) throw new HttpException(400, "You're not userData");
+    if (isEmpty(userData)) throw new HttpException(400, "Empty parameter");
 
     const findUser: User = await this.users.findUnique({ where: { id: userId } })
-    if (!findUser) throw new HttpException(409, "You're not user");
+    if (!findUser) throw new HttpException(409, "User ID not exist");
+
+    const findUserWithEmail: User[] = await this.users.findMany({ where: { email: userData.email } })
+    if (findUserWithEmail.some(u => u.id != userId)) {
+      throw new HttpException(409, "User Email existed!");
+    }
 
     const groups = userData.groupIds.map(id => { return { id: id } })
     let updateUserData: User;

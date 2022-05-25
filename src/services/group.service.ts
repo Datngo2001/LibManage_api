@@ -20,7 +20,7 @@ class GroupService {
         const findGroup: any = await this.Groups.findUnique({
             where: { id: GroupId }, include: { permissions: true, users: true }
         })
-        if (!findGroup) throw new HttpException(409, "You're not Group");
+        if (!findGroup) throw new HttpException(409, "Your Group ID not exist");
 
         return findGroup;
     }
@@ -52,10 +52,12 @@ class GroupService {
         if (isEmpty(GroupData)) throw new HttpException(400, "Empty update data");
 
         var findGroup: Group = await this.Groups.findUnique({ where: { id: GroupId } })
-        if (!findGroup) throw new HttpException(409, "Your Group title not exist");
+        if (!findGroup) throw new HttpException(409, "Your Group ID not exist");
 
-        // findGroup = await this.Groups.findUnique({ where: { name: GroupData.name } });
-        // if (findGroup) throw new HttpException(409, `Your name ${GroupData.name} already exists`);
+        const findUserWithEmail: Group[] = await this.Groups.findMany({ where: { name: GroupData.name } })
+        if (findUserWithEmail.some(u => u.id != GroupId)) {
+            throw new HttpException(409, `Group ${GroupData.name} existed!`);
+        }
 
         const users = GroupData.userIds.map(id => { return { id: id } })
         const permissions = GroupData.permissionIds.map(id => { return { id: id } })
@@ -77,7 +79,7 @@ class GroupService {
 
     public async deleteGroup(GroupId: number): Promise<Group> {
         const findGroup: Group = await this.Groups.findUnique({ where: { id: GroupId } });
-        if (!findGroup) throw new HttpException(409, "You're not Group");
+        if (!findGroup) throw new HttpException(409, "Your Group ID not exist");
 
         const deleteGroupData = await this.Groups.delete({ where: { id: GroupId } });
         return deleteGroupData;
