@@ -97,22 +97,37 @@ class UserService {
     const findUser: User = await this.users.findUnique({ where: { id: userId } })
     if (!findUser) throw new HttpException(409, "You're not user");
 
-    const hashedPassword = await hash(userData.password, 10);
     const groups = userData.groupIds.map(id => { return { id: id } })
-    const updateUserData: User = await this.users.update({
-      where: { id: userId },
-      data: {
-        username: userData.username,
-        password: hashedPassword,
-        fname: userData.fname,
-        lname: userData.lname,
-        groups: {
-          set: groups
-        },
-        email: userData.email
-      }
-    });
-
+    let updateUserData: User;
+    if (userData.password = "") {
+      updateUserData = await this.users.update({
+        where: { id: userId },
+        data: {
+          username: userData.username,
+          fname: userData.fname,
+          lname: userData.lname,
+          groups: {
+            set: groups
+          },
+          email: userData.email
+        }
+      });
+    } else {
+      const hashedPassword = await hash(userData.password, 10);
+      updateUserData = await this.users.update({
+        where: { id: userId },
+        data: {
+          username: userData.username,
+          password: hashedPassword,
+          fname: userData.fname,
+          lname: userData.lname,
+          groups: {
+            set: groups
+          },
+          email: userData.email
+        }
+      });
+    }
     return updateUserData;
   }
 
