@@ -13,7 +13,7 @@ export class BookTitleController {
     @UseBefore(authMiddleware([5]))
     @OpenAPI({ summary: '' })
     async getAll() {
-        const bookTitles = this.bookTitleService.findAllBookTitle();
+        const bookTitles = await this.bookTitleService.findAllBookTitle();
         return { data: bookTitles, message: 'OK' };
     }
 
