@@ -13,7 +13,8 @@ class BookTitleService {
         const BookTitles: BookTitle[] = await this.bookTitles.findMany({
             orderBy: {
                 createdAt: "desc"
-            }
+            },
+            include: { categorys: true }
         });
         return BookTitles;
     }
@@ -28,7 +29,7 @@ class BookTitleService {
     public async findBookTitleByIdIncludeBooks(BookTitleId: number): Promise<BookTitle> {
         const findBookTitle: BookTitle = await this.bookTitles.findUnique({
             where: { id: BookTitleId },
-            include: { books: true }
+            include: { books: true, categorys: true }
         })
         if (!findBookTitle) throw new HttpException(409, "Your ID not exist");
 
