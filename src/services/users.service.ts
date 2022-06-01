@@ -65,6 +65,13 @@ class UserService {
         borrowRegister: {
           orderBy: {
             createDate: "desc"
+          },
+          include: {
+            books: {
+              include: {
+                BookTitle: true
+              }
+            }
           }
         },
         borrowBills: {
