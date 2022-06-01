@@ -29,8 +29,8 @@ class BorrowRegisterService {
     public async createBorrowRegister(userId: number, BorrowRegisterData: CreateBorrowRegisterDto): Promise<BorrowRegister> {
         if (isEmpty(BorrowRegisterData)) throw new HttpException(400, "You're not BorrowRegisterData");
 
-        const avalableIds = await this.avalableBookIds(BorrowRegisterData.bookIds)
-        if (avalableIds.length != BorrowRegisterData.bookIds.length) {
+        const avalableIds = await this.getAvalableBookIds(BorrowRegisterData.bookTitileIds)
+        if (avalableIds.length != BorrowRegisterData.bookTitileIds.length) {
             throw new HttpException(409, "One or all of your books not avalable");
         }
 
@@ -58,8 +58,8 @@ class BorrowRegisterService {
         const findBorrowRegister: BorrowRegister = await this.BorrowRegisters.findUnique({ where: { id: BorrowRegisterId } })
         if (!findBorrowRegister) throw new HttpException(409, "Your book title not exist");
 
-        const avalableIds = await this.avalableBookIds(BorrowRegisterData.bookIds)
-        if (avalableIds.length != BorrowRegisterData.bookIds.length) {
+        const avalableIds = await this.getAvalableBookIds(BorrowRegisterData.bookTitileIds)
+        if (avalableIds.length != BorrowRegisterData.bookTitileIds.length) {
             throw new HttpException(409, "One or all of your books not avalable");
         }
 
@@ -90,11 +90,11 @@ class BorrowRegisterService {
         return deleteBorrowRegisterData;
     }
 
-    private async avalableBookIds(bookIds: number[]) {
+    private async getAvalableBookIds(bookTitileIds: number[]) {
         const findBooks = await this.books.findMany({
             where: {
-                id: {
-                    in: bookIds
+                bookTitleId: {
+                    in: bookTitileIds
                 },
                 borrowBills: {
                     none: {

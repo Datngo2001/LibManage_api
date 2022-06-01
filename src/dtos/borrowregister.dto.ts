@@ -11,7 +11,7 @@ export class CreateBorrowRegisterDto {
     public planReturnDate: Date
 
     @IsArray()
-    public bookIds: number[]
+    public bookTitileIds: number[]
 }
 
 export class UpdateBorrowRegisterDto {
@@ -28,5 +28,5 @@ export class UpdateBorrowRegisterDto {
     public userId: number
 
     @IsArray()
-    public bookIds: number[]
+    public bookTitileIds: number[]
 }
