@@ -51,7 +51,10 @@ class UserService {
   }
 
   public async findUserById(userId: number): Promise<User> {
-    const findUser: User = await this.users.findUnique({ where: { id: userId } })
+    const findUser: User = await this.users.findUnique({
+      where: { id: userId },
+      include: { groups: true },
+    })
     if (!findUser) throw new HttpException(409, "You're not user");
 
     return findUser;
@@ -103,10 +106,33 @@ class UserService {
     const findUser: User = await this.users.findUnique({
       where: { id: userId },
       include: {
-        borrowRegister: true,
+        borrowRegister: {
+          orderBy: {
+            createDate: "desc"
+          },
+          include: {
+            books: {
+              include: {
+                BookTitle: true
+              }
+            }
+          }
+        },
         borrowBills: {
           include: {
-            notifies: true
+            notifies: {
+              orderBy: {
+                createDate: "desc"
+              }
+            },
+            books: {
+              include: {
+                BookTitle: true
+              }
+            }
+          },
+          orderBy: {
+            planReturnDate: "desc"
           }
         },
       }
