@@ -44,17 +44,23 @@ export class BorrowRegisterController {
     @UseBefore(validationMiddleware(CreateBorrowRegisterDto, 'body', true))
     @OpenAPI({ summary: 'Update borrow reigister, when isConfirm == true create bill and delete current register' })
     async update(@Param('id') registerId: number, @Body() register: UpdateBorrowRegisterDto) {
-        const borrowRegister = await this.borrowRegisterService.updateBorrowRegister(registerId, register)
-        if (borrowRegister.isConfirmed == true) {
-            var bill = register as CreateBorrowBillDto;
+        if (register.isConfirmed == true) {
+            var bill = new CreateBorrowBillDto;
+            bill.userId = register.userId
+            bill.planReturnDate = register.planReturnDate
+            let currentRegister = await this.borrowRegisterService.findBorrowRegisterById(registerId) as any
+            let bookIds = currentRegister.books.map(book => book.id)
+            bill.bookIds = bookIds
             const createdBill = await this.borrowBillService.createBorrowBill(bill)
             if (createdBill) {
                 throw new HttpException(500, `Something error went create borrowbill`);
             }
             const deletedRegister = await this.borrowRegisterService.deleteBorrowRegister(registerId)
             return { data: { createdBill, deletedRegister }, message: 'created bill and deleted register' };
+        } else {
+            const borrowRegister = await this.borrowRegisterService.updateBorrowRegister(registerId, register)
+            return { data: borrowRegister, message: 'updated' };
         }
-        return { data: borrowRegister, message: 'updated' };
     }
 
     @Delete('/borrowregister/:id')
