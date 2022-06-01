@@ -36,6 +36,23 @@ export class CreateUserDto {
   public email: string;
 }
 
+export class CreateReaderDto {
+  @IsString()
+  public username: string;
+
+  @IsString()
+  public password: string;
+
+  @IsString()
+  public fname: string;
+
+  @IsString()
+  public lname: string;
+
+  @IsEmail()
+  public email: string;
+}
+
 export class UpdateUserDto {
   @IsString()
   public username: string;

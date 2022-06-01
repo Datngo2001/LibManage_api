@@ -1,5 +1,5 @@
 import { compare, hash } from 'bcrypt';
-import { CreateUserDto, UpdateUserDto, UpdateUserProfileDto } from '@dtos/users.dto';
+import { CreateReaderDto, CreateUserDto, UpdateUserDto, UpdateUserProfileDto } from '@dtos/users.dto';
 import { HttpException } from '@exceptions/HttpException';
 import { BorrowNotify, User } from '@prisma/client';
 import { isEmpty } from '@utils/util';
@@ -21,6 +21,35 @@ class UserService {
     return users;
   }
 
+  public async findAllBorrower(): Promise<User[]> {
+    const users: User[] = await this.users.findMany({
+      orderBy: [
+        {
+          borrowRegister: {
+            _count: "asc"
+          }
+        },
+        {
+          borrowBills: {
+            _count: "asc"
+          },
+        },
+        {
+          createdAt: "desc",
+        }
+      ],
+      include: {
+        _count: {
+          select: {
+            borrowBills: true,
+            borrowRegister: true,
+          }
+        }
+      }
+    });
+    return users;
+  }
+
   public async findUserById(userId: number): Promise<User> {
     const findUser: User = await this.users.findUnique({ where: { id: userId } })
     if (!findUser) throw new HttpException(409, "You're not user");
@@ -33,19 +62,53 @@ class UserService {
     const findUser: User = await this.users.findUnique({
       where: { id: userId },
       include: {
+        borrowRegister: {
+          orderBy: {
+            createDate: "desc"
+          }
+        },
+        borrowBills: {
+          include: {
+            notifies: {
+              orderBy: {
+                createDate: "desc"
+              }
+            },
+            books: {
+              include: {
+                BookTitle: true
+              }
+            }
+          },
+          orderBy: {
+            planReturnDate: "desc"
+          }
+        },
+      }
+    })
+    if (!findUser) throw new HttpException(409, "Borrwer not exist");
+
+    return findUser;
+  }
+
+  public async findBorrowerByIdIncludeAllData(userId: number): Promise<User> {
+    await this.borrowBillService.createOverdueNotify(userId)
+    const findUser: User = await this.users.findUnique({
+      where: { id: userId },
+      include: {
         borrowRegister: true,
         borrowBills: {
           include: {
             notifies: true
           }
         },
-        groups: true
       }
     })
     if (!findUser) throw new HttpException(409, "You're not user");
 
     return findUser;
   }
+
 
   public async findUserNotifies(userId: number): Promise<User> {
     await this.borrowBillService.createOverdueNotify(userId)
@@ -85,6 +148,34 @@ class UserService {
           connect: groups
         },
         email: userData.email
+      }
+    });
+
+    return createUserData;
+  }
+
+  public async createReader(readerData: CreateReaderDto): Promise<User> {
+    if (isEmpty(readerData)) throw new HttpException(400, "No Reader data");
+
+    const findUser: User = await this.users.findUnique({ where: { username: readerData.username } });
+    if (findUser) throw new HttpException(409, `Reader username ${readerData.username} already exists`);
+
+    const findUser2: User = await this.users.findUnique({ where: { email: readerData.email } });
+    if (findUser2) throw new HttpException(409, `Reader email ${readerData.email} already exists`);
+
+    const readerGroupName = "_" + readerData.username;
+    const hashedPassword = await hash(readerData.password, 10);
+    const createUserData: User = await this.users.create({
+      data: {
+        username: readerData.username,
+        password: hashedPassword,
+        fname: readerData.fname,
+        lname: readerData.lname,
+        groups: {
+          create: { name: readerGroupName },
+          connect: { id: 4 }
+        },
+        email: readerData.email
       }
     });
 

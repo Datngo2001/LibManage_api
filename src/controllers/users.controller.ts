@@ -1,6 +1,6 @@
 import { Controller, Param, Body, Get, Post, Put, Delete, HttpCode, UseBefore, Req } from 'routing-controllers';
 import { OpenAPI } from 'routing-controllers-openapi';
-import { CreateUserDto, UpdateUserProfileDto } from '@dtos/users.dto';
+import { CreateReaderDto, CreateUserDto, UpdateUserProfileDto } from '@dtos/users.dto';
 import { User } from '@prisma/client';
 import userService from '@services/users.service';
 import { validationMiddleware } from '@middlewares/validation.middleware';
@@ -10,6 +10,22 @@ import { RequestWithUser } from '@/interfaces/auth.interface';
 @Controller('/api')
 export class UsersController {
   public userService = new userService();
+
+  @Get('/users/borrower')
+  @UseBefore(authMiddleware([11]))
+  @OpenAPI({ summary: 'Return a list of Borrower' })
+  async getBorrowers() {
+    const findAllUsersData: User[] = await this.userService.findAllBorrower();
+    return { data: findAllUsersData, message: 'findAll' };
+  }
+
+  @Get('/users/borrower/:id')
+  @UseBefore(authMiddleware([11]))
+  @OpenAPI({ summary: 'Return find a borrower' })
+  async getBorrowerById(@Param('id') userId: number) {
+    const findOneUserData: User = await this.userService.findBorrowerByIdIncludeAllData(userId);
+    return { data: findOneUserData, message: 'findOne' };
+  }
 
   @Get('/users')
   @UseBefore(authMiddleware([3]))
@@ -27,6 +43,7 @@ export class UsersController {
     return { data: findOneUserData, message: 'findOne' };
   }
 
+
   @Get('/users/borrow/status')
   @UseBefore(authMiddleware([21]))
   @OpenAPI({ summary: 'Return find a user and all relate data' })
@@ -41,6 +58,16 @@ export class UsersController {
   async getUserNotifies(@Req() req: RequestWithUser) {
     const userWithNotifies: User = await this.userService.findUserNotifies(req.user.id);
     return { data: userWithNotifies, message: 'Notifies' };
+  }
+
+  @Post('/users/reader')
+  @HttpCode(201)
+  @UseBefore(authMiddleware([13]))
+  @UseBefore(validationMiddleware(CreateReaderDto, 'body'))
+  @OpenAPI({ summary: 'Create a new reader' })
+  async createReader(@Body() readerData: CreateReaderDto) {
+    const createReaderData: User = await this.userService.createReader(readerData);
+    return { data: createReaderData, message: 'created' };
   }
 
   @Post('/users')
