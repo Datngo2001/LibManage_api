@@ -26,12 +26,12 @@ class UserService {
       orderBy: [
         {
           borrowRegister: {
-            _count: "asc"
+            _count: "desc"
           }
         },
         {
           borrowBills: {
-            _count: "asc"
+            _count: "desc"
           },
         },
         {
