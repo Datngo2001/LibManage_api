@@ -61,7 +61,7 @@ class UserService {
   }
 
   public async findUserByIdIncludeAllData(userId: number): Promise<User> {
-    await this.borrowBillService.createOverdueNotify(userId)
+    //await this.borrowBillService.createOverdueNotify(userId)
     const findUser: User = await this.users.findUnique({
       where: { id: userId },
       include: {
@@ -102,7 +102,7 @@ class UserService {
   }
 
   public async findBorrowerByIdIncludeAllData(userId: number): Promise<User> {
-    await this.borrowBillService.createOverdueNotify(userId)
+    //await this.borrowBillService.createOverdueNotify(userId)
     const findUser: User = await this.users.findUnique({
       where: { id: userId },
       include: {
@@ -144,7 +144,7 @@ class UserService {
 
 
   public async findUserNotifies(userId: number): Promise<User> {
-    await this.borrowBillService.createOverdueNotify(userId)
+    //await this.borrowBillService.createOverdueNotify(userId)
     const userWithNotify: User = await this.users.findUnique({
       where: { id: userId },
       include: {

@@ -85,7 +85,26 @@ class BorrowRegisterService {
         return updateBorrowRegisterData;
     }
 
+    public async confirmBorrowRegister(BorrowRegisterId: number): Promise<BorrowRegister> {
+        const updateBorrowRegisterData = await this.BorrowRegisters.update({
+            where: { id: BorrowRegisterId },
+            data: {
+                isConfirmed: true
+            }
+        });
+
+        return updateBorrowRegisterData;
+    }
+
     public async deleteBorrowRegister(BorrowRegisterId: number): Promise<BorrowRegister> {
+        const findBorrowRegister: BorrowRegister = await this.BorrowRegisters.findUnique({ where: { id: BorrowRegisterId } });
+        if (!findBorrowRegister) throw new HttpException(409, "You're not BorrowRegister");
+
+        const deleteBorrowRegisterData = await this.BorrowRegisters.delete({ where: { id: BorrowRegisterId } });
+        return deleteBorrowRegisterData;
+    }
+
+    public async refectBorrowRegister(BorrowRegisterId: number): Promise<BorrowRegister> {
         const findBorrowRegister: BorrowRegister = await this.BorrowRegisters.findUnique({ where: { id: BorrowRegisterId } });
         if (!findBorrowRegister) throw new HttpException(409, "You're not BorrowRegister");
 

@@ -6,7 +6,7 @@ import authMiddleware from "@/middlewares/auth.middleware";
 import { validationMiddleware } from "@/middlewares/validation.middleware";
 import BorrowBillService from "@/services/borrowbill.service";
 import BorrowRegisterService from "@/services/borrowregister.service";
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Req, UseBefore } from "routing-controllers";
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Put, Req, UseBefore } from "routing-controllers";
 import { OpenAPI } from "routing-controllers-openapi";
 
 @Controller('/api')
@@ -61,6 +61,31 @@ export class BorrowRegisterController {
             const borrowRegister = await this.borrowRegisterService.updateBorrowRegister(registerId, register)
             return { data: borrowRegister, message: 'updated' };
         }
+    }
+
+    @Patch('/borrowregister/confirm/:id')
+    @UseBefore(authMiddleware([13, 17]))
+    @OpenAPI({ summary: 'Confirm borrow register' })
+    async confirm(@Param('id') registerId: number) {
+        let currentRegister = await this.borrowRegisterService.findBorrowRegisterById(registerId) as any
+        var bill = new CreateBorrowBillDto;
+        bill.userId = currentRegister.userId
+        bill.planReturnDate = currentRegister.planReturnDate
+        let bookIds = currentRegister.books.map(book => book.id)
+        bill.bookIds = bookIds
+        const createdBill = await this.borrowBillService.createBorrowBill(bill)
+        if (createdBill) {
+            throw new HttpException(500, `Something error went create borrowbill`);
+        }
+        const deletedRegister = await this.borrowRegisterService.deleteBorrowRegister(registerId)
+        return { data: { createdBill, deletedRegister }, message: 'created bill and deleted register' };
+    }
+
+    @Delete('/borrowregister/reject/:id')
+    @UseBefore(authMiddleware([14]))
+    async reject(@Param('id') registerId: number) {
+        const borrowRegister = await this.borrowRegisterService.refectBorrowRegister(registerId)
+        return { data: borrowRegister, message: 'rejected' };
     }
 
     @Delete('/borrowregister/:id')

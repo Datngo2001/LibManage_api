@@ -110,6 +110,21 @@ class BorrowBillService {
         return updateBorrowBillData;
     }
 
+    public async returnBorrowBill(BorrowBillId: number): Promise<BorrowBill> {
+        const findBorrowBill: BorrowBill = await this.BorrowBills.findUnique({ where: { id: BorrowBillId } })
+        if (!findBorrowBill) throw new HttpException(409, "Your book title not exist");
+
+        const updateBorrowBillData = await this.BorrowBills.update({
+            where: { id: BorrowBillId },
+            data: {
+                isReturned: true,
+                returnDate: getCurrentDate()
+            }
+        });
+
+        return updateBorrowBillData;
+    }
+
     public async deleteBorrowBill(BorrowBillId: number): Promise<BorrowBill> {
         const findBorrowBill: BorrowBill = await this.BorrowBills.findUnique({ where: { id: BorrowBillId } });
         if (!findBorrowBill) throw new HttpException(409, "You're not BorrowBill");
