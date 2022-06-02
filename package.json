@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "description": "TypeScript + Express + Routing Controllers API Server",
   "author": "",
+  "engines": {
+    "node": "16.x"
+  },
   "license": "ISC",
   "scripts": {
     "start": "node dist/server.js",
