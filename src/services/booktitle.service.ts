@@ -3,7 +3,6 @@ import { Book, BookTitle } from '@prisma/client';
 import { isEmpty } from '@utils/util';
 import prisma from '@/dbclient';
 import { CreateBookTitleDto } from '@/dtos/booktitle.dto';
-import { plainToClass, plainToClassFromExist } from 'class-transformer';
 
 class BookTitleService {
     public bookTitles = prisma.bookTitle;
