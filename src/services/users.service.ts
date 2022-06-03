@@ -108,6 +108,7 @@ class UserService {
       include: {
         borrowRegister: {
           orderBy: {
+            isConfirmed: "asc",
             createDate: "desc"
           },
           include: {
@@ -132,6 +133,7 @@ class UserService {
             }
           },
           orderBy: {
+            isReturned: "asc",
             planReturnDate: "desc"
           }
         },
