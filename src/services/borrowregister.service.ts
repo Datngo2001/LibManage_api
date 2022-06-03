@@ -108,7 +108,12 @@ class BorrowRegisterService {
         const findBorrowRegister: BorrowRegister = await this.BorrowRegisters.findUnique({ where: { id: BorrowRegisterId } });
         if (!findBorrowRegister) throw new HttpException(409, "You're not BorrowRegister");
 
-        const borrowRegisterData = await this.BorrowRegisters.update({ data: { isRejected: true } });
+        const borrowRegisterData = await this.BorrowRegisters.update({
+            where: {
+                id: BorrowRegisterId
+            },
+            data: { isRejected: true }
+        });
         return borrowRegisterData;
     }
 
