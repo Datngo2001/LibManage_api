@@ -107,10 +107,10 @@ class UserService {
       where: { id: userId },
       include: {
         borrowRegister: {
-          orderBy: {
-            isConfirmed: "asc",
-            createDate: "desc"
-          },
+          orderBy: [
+            { isConfirmed: "asc" },
+            { createDate: "desc" }
+          ],
           include: {
             books: {
               include: {
@@ -132,10 +132,10 @@ class UserService {
               }
             }
           },
-          orderBy: {
-            isReturned: "asc",
-            planReturnDate: "desc"
-          }
+          orderBy: [
+            { isReturned: "asc" },
+            { planReturnDate: "desc" }
+          ]
         },
       }
     })
