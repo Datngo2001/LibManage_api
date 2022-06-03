@@ -85,6 +85,7 @@ model BorrowRegister {
   id             Int      @id @default(autoincrement())
   note           String?
   isConfirmed    Boolean
+  isRejected     Boolean?
   planReturnDate DateTime
   createDate     DateTime @default(now())
   user           User     @relation(fields: [userId], references: [id])

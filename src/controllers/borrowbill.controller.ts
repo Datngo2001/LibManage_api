@@ -42,7 +42,7 @@ export class BorrowBillController {
         return { data: updateBill, message: 'updated' };
     }
 
-    @Patch('/borrowbill/return/:id')
+    @Put('/borrowbill/return/:id')
     @UseBefore(authMiddleware([15]))
     async return(@Param('id') billId: number) {
         const updateBill = await this.borrowBillService.returnBorrowBill(billId)

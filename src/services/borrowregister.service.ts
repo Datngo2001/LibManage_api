@@ -108,8 +108,8 @@ class BorrowRegisterService {
         const findBorrowRegister: BorrowRegister = await this.BorrowRegisters.findUnique({ where: { id: BorrowRegisterId } });
         if (!findBorrowRegister) throw new HttpException(409, "You're not BorrowRegister");
 
-        const deleteBorrowRegisterData = await this.BorrowRegisters.delete({ where: { id: BorrowRegisterId } });
-        return deleteBorrowRegisterData;
+        const borrowRegisterData = await this.BorrowRegisters.update({ data: { isRejected: true } });
+        return borrowRegisterData;
     }
 
     private async getAvalableBookIds(bookTitileIds: number[]) {

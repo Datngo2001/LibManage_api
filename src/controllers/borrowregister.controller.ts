@@ -63,7 +63,7 @@ export class BorrowRegisterController {
         }
     }
 
-    @Patch('/borrowregister/confirm/:id')
+    @Put('/borrowregister/confirm/:id')
     @UseBefore(authMiddleware([13, 17]))
     @OpenAPI({ summary: 'Confirm borrow register' })
     async confirm(@Param('id') registerId: number) {
@@ -78,7 +78,7 @@ export class BorrowRegisterController {
         return { data: { createdBill, deletedRegister }, message: 'created bill and deleted register' };
     }
 
-    @Delete('/borrowregister/reject/:id')
+    @Put('/borrowregister/reject/:id')
     @UseBefore(authMiddleware([14]))
     async reject(@Param('id') registerId: number) {
         const borrowRegister = await this.borrowRegisterService.refectBorrowRegister(registerId)
