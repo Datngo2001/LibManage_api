@@ -74,9 +74,6 @@ export class BorrowRegisterController {
         let bookIds = currentRegister.books.map(book => book.id)
         bill.bookIds = bookIds
         const createdBill = await this.borrowBillService.createBorrowBill(bill)
-        if (createdBill) {
-            throw new HttpException(500, `Something error went create borrowbill`);
-        }
         const deletedRegister = await this.borrowRegisterService.deleteBorrowRegister(registerId)
         return { data: { createdBill, deletedRegister }, message: 'created bill and deleted register' };
     }
