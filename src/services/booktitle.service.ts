@@ -8,6 +8,24 @@ class BookTitleService {
     public bookTitles = prisma.bookTitle;
     public books = prisma.book;
 
+    public async searchBookTitle(title: string, page: number, limit: number): Promise<BookTitle[]> {
+        const BookTitles: BookTitle[] = await this.bookTitles.findMany({
+            skip: (page - 1) * limit,
+            take: limit,
+            orderBy: {
+                createdAt: "desc"
+            },
+            include: { categorys: true },
+            where: {
+                title: {
+                    contains: title,
+                    mode: 'insensitive'
+                }
+            }
+        });
+        return BookTitles;
+    }
+
     public async findAllBookTitle(): Promise<BookTitle[]> {
         const BookTitles: BookTitle[] = await this.bookTitles.findMany({
             orderBy: {

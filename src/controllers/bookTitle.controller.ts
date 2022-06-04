@@ -9,6 +9,13 @@ import { OpenAPI } from "routing-controllers-openapi";
 export class BookTitleController {
     bookTitleService = new BookTitleService();
 
+    @Get('/booktitle/search/:title/:page/:limit')
+    @OpenAPI({ summary: '' })
+    async search(@Param('title') title: string, @Param('page') page: number, @Param('limit') limit: number,) {
+        const bookTitles = await this.bookTitleService.searchBookTitle(title, page, limit);
+        return { title: title, page: page, limit: limit, data: bookTitles, message: 'OK' };
+    }
+
     @Get('/booktitle')
     @UseBefore(authMiddleware([5]))
     @OpenAPI({ summary: '' })
