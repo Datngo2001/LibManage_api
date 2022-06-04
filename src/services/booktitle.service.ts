@@ -26,6 +26,18 @@ class BookTitleService {
         return BookTitles;
     }
 
+    public async searchBookTitleTotalFound(title: string): Promise<number> {
+        const result = await this.bookTitles.count({
+            where: {
+                title: {
+                    contains: title,
+                    mode: 'insensitive'
+                }
+            }
+        });
+        return result;
+    }
+
     public async findAllBookTitle(): Promise<BookTitle[]> {
         const BookTitles: BookTitle[] = await this.bookTitles.findMany({
             orderBy: {

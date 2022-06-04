@@ -13,8 +13,10 @@ export class BookTitleController {
     @Get('/booktitle/search')
     @OpenAPI({ summary: '' })
     async search(@QueryParam("title") title: string, @QueryParam("page") page: number, @QueryParam("limit") limit: number) {
-        const bookTitles = await this.bookTitleService.searchBookTitle(title, page, limit);
-        return { title: title, page: page, limit: limit, data: bookTitles, message: 'OK' };
+        const searchPromise = this.bookTitleService.searchBookTitle(title, page, limit);
+        const countPromise = this.bookTitleService.searchBookTitleTotalFound(title);
+        const result = await Promise.all([countPromise, searchPromise])
+        return { title: title, page: page, limit: limit, data: result[1], total: result[0], message: 'OK' };
     }
 
     @Get('/booktitle')
