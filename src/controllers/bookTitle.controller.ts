@@ -9,7 +9,7 @@ import { OpenAPI } from "routing-controllers-openapi";
 export class BookTitleController {
     bookTitleService = new BookTitleService();
 
-    @Get('/booktitle/search/:title/:page/:limit')
+    @Get('/booktitle/search/:page/:limit/:title')
     @OpenAPI({ summary: '' })
     async search(@Param('title') title: string, @Param('page') page: number, @Param('limit') limit: number,) {
         const bookTitles = await this.bookTitleService.searchBookTitle(title, page, limit);
