@@ -1,17 +1,18 @@
 import { CreateBookTitleDto } from "@/dtos/booktitle.dto";
+import { RequestWithUser } from "@/interfaces/auth.interface";
 import authMiddleware from "@/middlewares/auth.middleware";
 import { validationMiddleware } from "@/middlewares/validation.middleware";
 import BookTitleService from "@/services/booktitle.service";
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Put, UseBefore } from "routing-controllers";
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Put, QueryParam, Req, UseBefore } from "routing-controllers";
 import { OpenAPI } from "routing-controllers-openapi";
 
 @Controller('/api')
 export class BookTitleController {
     bookTitleService = new BookTitleService();
 
-    @Get('/booktitle/search/:page/:limit/:title')
+    @Get('/booktitle/search')
     @OpenAPI({ summary: '' })
-    async search(@Param('title') title: string, @Param('page') page: number, @Param('limit') limit: number,) {
+    async search(@QueryParam("title") title: string, @QueryParam("page") page: number, @QueryParam("limit") limit: number) {
         const bookTitles = await this.bookTitleService.searchBookTitle(title, page, limit);
         return { title: title, page: page, limit: limit, data: bookTitles, message: 'OK' };
     }
