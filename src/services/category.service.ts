@@ -29,13 +29,9 @@ class CategoryService {
         const findCategory: Category = await this.Categorys.findUnique({ where: { name: CategoryData.name } });
         if (findCategory) throw new HttpException(409, `Your name ${CategoryData.name} already exists`);
 
-        const bookTitles = CategoryData.bookTitleIds.map(id => { return { id: id } })
         const createCategoryData: Category = await this.Categorys.create({
             data: {
                 name: CategoryData.name,
-                bookTitles: {
-                    connect: bookTitles
-                }
             }
         });
 
@@ -51,14 +47,10 @@ class CategoryService {
         // findCategory = await this.Categorys.findUnique({ where: { name: CategoryData.name } });
         // if (findCategory) throw new HttpException(409, `Your name ${CategoryData.name} already exists`);
 
-        const bookTitles = CategoryData.bookTitleIds.map(id => { return { id: id } })
         const updateCategoryData = await this.Categorys.update({
             where: { id: CategoryId },
             data: {
                 name: CategoryData.name,
-                bookTitles: {
-                    set: bookTitles
-                }
             }
         });
 
