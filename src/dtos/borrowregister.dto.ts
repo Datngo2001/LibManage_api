@@ -4,8 +4,8 @@ export class CreateBorrowRegisterDto {
     @IsString()
     public note: string
 
-    @IsDate()
-    public planReturnDate: Date
+    @IsString()
+    public planReturnDate: string
 
     @IsArray()
     public bookTitileIds: number[]
@@ -18,8 +18,8 @@ export class UpdateBorrowRegisterDto {
     @IsBoolean()
     public isConfirmed: boolean
 
-    @IsDate()
-    public planReturnDate: Date
+    @IsString()
+    public planReturnDate: string
 
     @IsNumber()
     public userId: number

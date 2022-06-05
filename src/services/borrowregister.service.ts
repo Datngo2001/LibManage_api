@@ -32,6 +32,12 @@ class BorrowRegisterService {
     public async createBorrowRegister(userId: number, BorrowRegisterData: CreateBorrowRegisterDto): Promise<BorrowRegister> {
         if (isEmpty(BorrowRegisterData)) throw new HttpException(400, "You're not BorrowRegisterData");
 
+        try {
+            BorrowRegisterData.planReturnDate = new Date(BorrowRegisterData.planReturnDate).toISOString()
+        } catch (error) {
+            throw new HttpException(409, "Plan return date invalid format");
+        }
+
         const avalableIds = await this.getAvalableBookIds(BorrowRegisterData.bookTitileIds)
         if (avalableIds.length != BorrowRegisterData.bookTitileIds.length) {
             throw new HttpException(409, "One or all of your books not avalable");
