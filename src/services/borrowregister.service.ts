@@ -41,7 +41,7 @@ class BorrowRegisterService {
         const createBorrowRegisterData: BorrowRegister = await this.BorrowRegisters.create({
             data: {
                 note: BorrowRegisterData.note,
-                isConfirmed: BorrowRegisterData.isConfirmed,
+                isConfirmed: false,
                 planReturnDate: BorrowRegisterData.planReturnDate,
                 user: {
                     connect: { id: userId }

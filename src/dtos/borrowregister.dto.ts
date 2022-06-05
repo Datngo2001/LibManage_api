@@ -4,9 +4,6 @@ export class CreateBorrowRegisterDto {
     @IsString()
     public note: string
 
-    @IsBoolean()
-    public isConfirmed: boolean
-
     @IsDate()
     public planReturnDate: Date
 
