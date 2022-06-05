@@ -90,7 +90,6 @@ class BookTitleService {
         if (findBookTitle) throw new HttpException(409, `Your Book Title ${BookTitleData.title} already exists`);
 
         const categorys = BookTitleData.categoryIds.map(id => { return { id: id } })
-        const books = BookTitleData.bookIds.map(id => { return { id: id } })
         const createBookTitleData: BookTitle = await this.bookTitles.create({
             data: {
                 title: BookTitleData.title,
@@ -100,9 +99,6 @@ class BookTitleService {
                 categorys: {
                     connect: categorys
                 },
-                books: {
-                    connect: books
-                }
             }
         });
 
@@ -121,7 +117,6 @@ class BookTitleService {
         }
 
         const categorys = BookTitleData.categoryIds.map(id => { return { id: id } })
-        const books = BookTitleData.bookIds.map(id => { return { id: id } })
         const updateBookTitleData = await this.bookTitles.update({
             where: { id: BookTitleId },
             data: {
@@ -132,9 +127,6 @@ class BookTitleService {
                 categorys: {
                     set: categorys
                 },
-                books: {
-                    set: books
-                }
             }
         });
 

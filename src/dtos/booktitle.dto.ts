@@ -19,7 +19,4 @@ export class CreateBookTitleDto {
     @IsArray()
     public categoryIds: number[]
 
-    @IsOptional()
-    @IsArray()
-    public bookIds: number[]
 }
