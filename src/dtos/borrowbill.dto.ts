@@ -1,11 +1,11 @@
-import { IsArray, IsBoolean, IsDate, IsNumber } from "class-validator"
+import { IsArray, IsBoolean, IsDate, IsNumber, IsString } from "class-validator"
 
 export class CreateBorrowBillDto {
     @IsNumber()
     public userId: number
 
-    @IsDate()
-    public planReturnDate: Date
+    @IsString()
+    public planReturnDate: string
 
     @IsArray()
     public bookIds: number[]
@@ -16,8 +16,8 @@ export class UpdateBorrowBillDto {
     @IsNumber()
     public userId: number
 
-    @IsDate()
-    public planReturnDate: Date
+    @IsString()
+    public planReturnDate: string
 
     @IsArray()
     public bookIds: number[]
