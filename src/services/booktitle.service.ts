@@ -3,10 +3,11 @@ import { Book, BookTitle } from '@prisma/client';
 import { isEmpty } from '@utils/util';
 import prisma from '@/dbclient';
 import { CreateBookTitleDto } from '@/dtos/booktitle.dto';
+import Database from '@/Database';
 
 class BookTitleService {
-    public bookTitles = prisma.bookTitle;
-    public books = prisma.book;
+    public bookTitles = Database.getInstance().bookTitle;
+    public books = Database.getInstance().book;
 
     public async searchBookTitle(title: string, page: number, limit: number): Promise<BookTitle[]> {
         const BookTitles: BookTitle[] = await this.bookTitles.findMany({

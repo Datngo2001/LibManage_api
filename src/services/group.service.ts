@@ -3,9 +3,10 @@ import { Group } from '@prisma/client';
 import { isEmpty } from '@utils/util';
 import prisma from '@/dbclient';
 import { CreateGroupDto } from '@/dtos/group.dto';
+import Database from '@/Database';
 
 class GroupService {
-    public Groups = prisma.group;
+    public Groups = Database.getInstance().group;
 
     public async findAllGroup(): Promise<Group[]> {
         const Groups: Group[] = await this.Groups.findMany({

@@ -3,9 +3,10 @@ import { BorrowNotify } from '@prisma/client';
 import { isEmpty } from '@utils/util';
 import prisma from '@/dbclient';
 import { CreateBorrowNotifyDto } from '@/dtos/borrownotify.dto';
+import Database from '@/Database';
 
 class BorrowNotifyService {
-    public BorrowNotifys = prisma.borrowNotify;
+    public BorrowNotifys = Database.getInstance().borrowNotify;
 
     public async findAllBorrowNotify(): Promise<BorrowNotify[]> {
         const BorrowNotifys: BorrowNotify[] = await this.BorrowNotifys.findMany({

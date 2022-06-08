@@ -3,9 +3,10 @@ import { Book } from '@prisma/client';
 import { isEmpty } from '@utils/util';
 import prisma from '@/dbclient';
 import { CreateBookDto } from '@/dtos/book.dto';
+import Database from '@/Database';
 
 class BookService {
-    public books = prisma.book;
+    public books = Database.getInstance().book;
 
     public async findAllBook(): Promise<Book[]> {
         const Books: Book[] = await this.books.findMany({

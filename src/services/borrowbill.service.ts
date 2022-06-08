@@ -4,11 +4,12 @@ import { isEmpty } from '@utils/util';
 import prisma from '@/dbclient';
 import { CreateBorrowBillDto, UpdateBorrowBillDto } from '@/dtos/borrowbill.dto';
 import getCurrentDate from '@/utils/getCurrentDate';
+import Database from '@/Database';
 
 class BorrowBillService {
     public readonly MIN_RETURN_TIME = 7
     public readonly MAX_RETURN_TIME = 300
-    public BorrowBills = prisma.borrowBill;
+    public BorrowBills = Database.getInstance().borrowBill;
 
     public async findAllBorrowBill(): Promise<BorrowBill[]> {
         const BorrowBills: BorrowBill[] = await this.BorrowBills.findMany({

@@ -3,9 +3,10 @@ import { Category } from '@prisma/client';
 import { isEmpty } from '@utils/util';
 import prisma from '@/dbclient';
 import { CreateCategoryDto } from '@/dtos/category.dto';
+import Database from '@/Database';
 
 class CategoryService {
-    public Categorys = prisma.category;
+    public Categorys = Database.getInstance().category;
 
     public async findAllCategory(): Promise<Category[]> {
         const Categorys: Category[] = await this.Categorys.findMany({

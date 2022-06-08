@@ -6,10 +6,11 @@ import { isEmpty } from '@utils/util';
 import prisma from '@/dbclient';
 import BorrowBillService from './borrowbill.service';
 import { email } from 'envalid';
+import Database from '@/Database';
 
 class UserService {
-  public users = prisma.user;
-  public borrowNotifies = prisma.borrowNotify;
+  public users = Database.getInstance().user;
+  public borrowNotifies = Database.getInstance().borrowNotify;
   public borrowBillService = new BorrowBillService();
 
   public async findAllUser(): Promise<User[]> {

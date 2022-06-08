@@ -1,10 +1,9 @@
 import { HttpException } from '@exceptions/HttpException';
 import { Permission } from '@prisma/client';
-import { isEmpty } from '@utils/util';
-import prisma from '@/dbclient';
+import Database from '@/Database';
 
 class PermissionService {
-    public Permissions = prisma.permission;
+    public Permissions = Database.getInstance().permission;
 
     public async findAllPermission(): Promise<Permission[]> {
         const Permissions: Permission[] = await this.Permissions.findMany({

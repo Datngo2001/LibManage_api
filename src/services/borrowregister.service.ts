@@ -4,10 +4,11 @@ import { isEmpty } from '@utils/util';
 import prisma from '@/dbclient';
 import { CreateBorrowRegisterDto, UpdateBorrowRegisterDto } from '@/dtos/borrowregister.dto';
 import BorrowBillService from './borrowbill.service';
+import Database from '@/Database';
 
 class BorrowRegisterService {
-    public BorrowRegisters = prisma.borrowRegister;
-    public books = prisma.book;
+    public BorrowRegisters = Database.getInstance().borrowRegister;
+    public books = Database.getInstance().book;
     borrowBillService = new BorrowBillService()
 
     public async findAllBorrowRegister(): Promise<BorrowRegister[]> {

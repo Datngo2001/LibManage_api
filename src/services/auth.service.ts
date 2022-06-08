@@ -7,9 +7,11 @@ import { DataStoredInToken, TokenData } from '@interfaces/auth.interface';
 import { isEmpty } from '@utils/util';
 import prisma from '@/dbclient';
 import { User } from '@prisma/client';
+import Database from '@/Database';
 
 class AuthService {
-  public users = prisma.user;
+  public users = Database.getInstance().user;
+  public groups = Database.getInstance().group;
 
   public async signup(userData: SignupDto): Promise<User> {
     if (isEmpty(userData)) throw new HttpException(400, "Empty Data");
@@ -91,7 +93,7 @@ class AuthService {
   }
 
   public async getPermissionCode(userId: number) {
-    var groups = await prisma.group.findMany({
+    var groups = await this.groups.findMany({
       select: { permissions: { select: { id: true } } },
       where: {
         users: { some: { id: { equals: userId } } }
