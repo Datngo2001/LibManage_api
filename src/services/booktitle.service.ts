@@ -4,8 +4,17 @@ import { isEmpty } from '@utils/util';
 import prisma from '@/dbclient';
 import { CreateBookTitleDto } from '@/dtos/booktitle.dto';
 import Database from '@/Database';
+import { FindBuilder } from '@/builder/FindBuilder';
+import { CreateBuilder } from '@/builder/CreateBuilder';
+import { UpdateBuilder } from '@/builder/UpdateBuilder';
+import { DeleteBuilder } from '@/builder/DeleteBuilder';
 
 class BookTitleService {
+    public findBuilder = new FindBuilder()
+    public createBuilder = new CreateBuilder()
+    public updateBuilder = new UpdateBuilder()
+    public deleteBuilder = new DeleteBuilder()
+
     public bookTitles = Database.getInstance().bookTitle;
     public books = Database.getInstance().book;
 
@@ -91,17 +100,16 @@ class BookTitleService {
         if (findBookTitle) throw new HttpException(409, `Your Book Title ${BookTitleData.title} already exists`);
 
         const categorys = BookTitleData.categoryIds.map(id => { return { id: id } })
-        const createBookTitleData: BookTitle = await this.bookTitles.create({
-            data: {
-                title: BookTitleData.title,
-                author: BookTitleData.author,
-                image: BookTitleData.image,
-                description: BookTitleData.description,
-                categorys: {
-                    connect: categorys
-                },
-            }
-        });
+
+        const query = this.createBuilder
+            .addColumn({ name: "title", value: BookTitleData.title })
+            .addColumn({ name: "author", value: BookTitleData.author })
+            .addColumn({ name: "image", value: BookTitleData.image })
+            .addColumn({ name: "description", value: BookTitleData.description })
+            .addColumn({ name: "categorys", value: { connect: categorys } })
+            .getQuery()
+
+        const createBookTitleData: BookTitle = await this.bookTitles.create(query);
 
         return createBookTitleData;
     }
@@ -118,18 +126,17 @@ class BookTitleService {
         }
 
         const categorys = BookTitleData.categoryIds.map(id => { return { id: id } })
-        const updateBookTitleData = await this.bookTitles.update({
-            where: { id: BookTitleId },
-            data: {
-                title: BookTitleData.title,
-                author: BookTitleData.author,
-                image: BookTitleData.image,
-                description: BookTitleData.description,
-                categorys: {
-                    set: categorys
-                },
-            }
-        });
+
+        const query = this.updateBuilder
+            .addColumn({ name: "title", value: BookTitleData.title })
+            .addColumn({ name: "author", value: BookTitleData.author })
+            .addColumn({ name: "image", value: BookTitleData.image })
+            .addColumn({ name: "description", value: BookTitleData.description })
+            .addColumn({ name: "categorys", value: { set: categorys } })
+            .whereId(BookTitleId)
+            .getQuery()
+
+        const updateBookTitleData = await this.bookTitles.update(query);
 
         return updateBookTitleData;
     }
@@ -138,7 +145,7 @@ class BookTitleService {
         const findBookTitle: BookTitle = await this.bookTitles.findUnique({ where: { id: BookTitleId } });
         if (!findBookTitle) throw new HttpException(409, "Your ID not exist");
 
-        const deleteBookTitleData = await this.bookTitles.delete({ where: { id: BookTitleId } });
+        const deleteBookTitleData = await this.bookTitles.delete(this.deleteBuilder.whereId(BookTitleId).getQuery());
         return deleteBookTitleData;
     }
 }

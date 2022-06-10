@@ -4,23 +4,35 @@ import { isEmpty } from '@utils/util';
 import prisma from '@/dbclient';
 import { CreateGroupDto } from '@/dtos/group.dto';
 import Database from '@/Database';
+import { FindBuilder } from '@/builder/FindBuilder';
+import { CreateBuilder } from '@/builder/CreateBuilder';
+import { UpdateBuilder } from '@/builder/UpdateBuilder';
+import { DeleteBuilder } from '@/builder/DeleteBuilder';
 
 class GroupService {
+    public findBuilder = new FindBuilder()
+    public createBuilder = new CreateBuilder()
+    public updateBuilder = new UpdateBuilder()
+    public deleteBuilder = new DeleteBuilder()
+
     public Groups = Database.getInstance().group;
 
     public async findAllGroup(): Promise<Group[]> {
-        const Groups: Group[] = await this.Groups.findMany({
-            orderBy: {
-                createdAt: "desc"
-            }
-        });
+        const query = this.findBuilder
+            .addOrderBy({ name: "createdAt", isDesc: true })
+            .getQuery();
+
+        const Groups: Group[] = await this.Groups.findMany(query);
         return Groups;
     }
 
     public async findGroupById(GroupId: number): Promise<Group> {
-        const findGroup: any = await this.Groups.findUnique({
-            where: { id: GroupId }, include: { permissions: true, users: true }
-        })
+        const query = this.findBuilder
+            .whereId(GroupId)
+            .includeColumns(["permissions", "users"])
+            .getQuery();
+
+        const findGroup: any = await this.Groups.findUnique(query)
         if (!findGroup) throw new HttpException(409, "Your Group ID not exist");
 
         return findGroup;
@@ -34,17 +46,14 @@ class GroupService {
 
         const users = GroupData.userIds.map(id => { return { id: id } })
         const permissions = GroupData.permissionIds.map(id => { return { id: id } })
-        const createGroupData: Group = await this.Groups.create({
-            data: {
-                name: GroupData.name,
-                users: {
-                    connect: users
-                },
-                permissions: {
-                    connect: permissions
-                }
-            }
-        });
+
+        const query = this.createBuilder
+            .addColumn({ name: "name", value: GroupData.name })
+            .addColumn({ name: "users", value: { connect: users } })
+            .addColumn({ name: "permissions", value: { connect: permissions } })
+            .getQuery();
+
+        const createGroupData: Group = await this.Groups.create(query);
 
         return createGroupData;
     }
@@ -62,18 +71,15 @@ class GroupService {
 
         const users = GroupData.userIds.map(id => { return { id: id } })
         const permissions = GroupData.permissionIds.map(id => { return { id: id } })
-        const updateGroupData: Group = await this.Groups.update({
-            where: { id: GroupId },
-            data: {
-                name: GroupData.name,
-                users: {
-                    set: users
-                },
-                permissions: {
-                    set: permissions
-                }
-            }
-        });
+
+        const query = this.updateBuilder
+            .addColumn({ name: "name", value: GroupData.name })
+            .addColumn({ name: "users", value: { set: users } })
+            .addColumn({ name: "permissions", value: { set: permissions } })
+            .whereId(GroupId)
+            .getQuery();
+
+        const updateGroupData: Group = await this.Groups.update(query);
 
         return updateGroupData;
     }
@@ -82,7 +88,7 @@ class GroupService {
         const findGroup: Group = await this.Groups.findUnique({ where: { id: GroupId } });
         if (!findGroup) throw new HttpException(409, "Your Group ID not exist");
 
-        const deleteGroupData = await this.Groups.delete({ where: { id: GroupId } });
+        const deleteGroupData = await this.Groups.delete(this.deleteBuilder.whereId(GroupId).getQuery());
         return deleteGroupData;
     }
 }

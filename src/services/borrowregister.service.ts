@@ -5,26 +5,37 @@ import prisma from '@/dbclient';
 import { CreateBorrowRegisterDto, UpdateBorrowRegisterDto } from '@/dtos/borrowregister.dto';
 import BorrowBillService from './borrowbill.service';
 import Database from '@/Database';
+import { FindBuilder } from '@/builder/FindBuilder';
+import { CreateBuilder } from '@/builder/CreateBuilder';
+import { UpdateBuilder } from '@/builder/UpdateBuilder';
+import { DeleteBuilder } from '@/builder/DeleteBuilder';
 
 class BorrowRegisterService {
+    public findBuilder = new FindBuilder()
+    public createBuilder = new CreateBuilder()
+    public updateBuilder = new UpdateBuilder()
+    public deleteBuilder = new DeleteBuilder()
+
     public BorrowRegisters = Database.getInstance().borrowRegister;
     public books = Database.getInstance().book;
     borrowBillService = new BorrowBillService()
 
     public async findAllBorrowRegister(): Promise<BorrowRegister[]> {
-        const BorrowRegisters: BorrowRegister[] = await this.BorrowRegisters.findMany({
-            orderBy: {
-                planReturnDate: "desc"
-            }
-        });
+        const query = this.findBuilder
+            .addOrderBy({ name: "createdAt", isDesc: true })
+            .getQuery();
+
+        const BorrowRegisters: BorrowRegister[] = await this.BorrowRegisters.findMany(query);
         return BorrowRegisters;
     }
 
     public async findBorrowRegisterById(BorrowRegisterId: number): Promise<BorrowRegister> {
-        const findBorrowRegister: BorrowRegister = await this.BorrowRegisters.findUnique({
-            where: { id: BorrowRegisterId },
-            include: { user: true, books: true }
-        })
+        const query = this.findBuilder
+            .whereId(BorrowRegisterId)
+            .includeColumns(["user", "books"])
+            .getQuery();
+
+        const findBorrowRegister: BorrowRegister = await this.BorrowRegisters.findUnique(query)
         if (!findBorrowRegister) throw new HttpException(409, "You're not BorrowRegister");
 
         return findBorrowRegister;
@@ -45,19 +56,16 @@ class BorrowRegisterService {
         }
 
         const books = avalableIds.map(id => { return { id: id } })
-        const createBorrowRegisterData: BorrowRegister = await this.BorrowRegisters.create({
-            data: {
-                note: BorrowRegisterData.note,
-                isConfirmed: false,
-                planReturnDate: BorrowRegisterData.planReturnDate,
-                user: {
-                    connect: { id: userId }
-                },
-                books: {
-                    connect: books
-                }
-            }
-        });
+
+        const query = this.createBuilder
+            .addColumn({ name: "note", value: BorrowRegisterData.note })
+            .addColumn({ name: "isConfirmed", value: false })
+            .addColumn({ name: "planReturnDate", value: BorrowRegisterData.planReturnDate })
+            .addColumn({ name: "user", value: { connect: { id: userId } } })
+            .addColumn({ name: "books", value: { connect: books } })
+            .getQuery();
+
+        const createBorrowRegisterData: BorrowRegister = await this.BorrowRegisters.create(query);
 
         return createBorrowRegisterData;
     }
@@ -74,31 +82,28 @@ class BorrowRegisterService {
         }
 
         const books = avalableIds.map(id => { return { id: id } })
-        const updateBorrowRegisterData = await this.BorrowRegisters.update({
-            where: { id: BorrowRegisterId },
-            data: {
-                note: BorrowRegisterData.note,
-                planReturnDate: BorrowRegisterData.planReturnDate,
-                isConfirmed: BorrowRegisterData.isConfirmed,
-                user: {
-                    connect: { id: BorrowRegisterData.userId }
-                },
-                books: {
-                    set: books
-                }
-            }
-        });
+
+        const query = this.updateBuilder
+            .addColumn({ name: "note", value: BorrowRegisterData.note })
+            .addColumn({ name: "isConfirmed", value: false })
+            .addColumn({ name: "planReturnDate", value: BorrowRegisterData.planReturnDate })
+            .addColumn({ name: "user", value: { connect: { id: BorrowRegisterData.userId } } })
+            .addColumn({ name: "books", value: { set: books } })
+            .whereId(BorrowRegisterId)
+            .getQuery();
+
+        const updateBorrowRegisterData = await this.BorrowRegisters.update(query);
 
         return updateBorrowRegisterData;
     }
 
     public async confirmBorrowRegister(BorrowRegisterId: number): Promise<BorrowRegister> {
-        const updateBorrowRegisterData = await this.BorrowRegisters.update({
-            where: { id: BorrowRegisterId },
-            data: {
-                isConfirmed: true
-            }
-        });
+        const query = this.updateBuilder
+            .addColumn({ name: "isConfirmed", value: true })
+            .whereId(BorrowRegisterId)
+            .getQuery();
+
+        const updateBorrowRegisterData = await this.BorrowRegisters.update(query);
 
         return updateBorrowRegisterData;
     }
@@ -107,7 +112,7 @@ class BorrowRegisterService {
         const findBorrowRegister: BorrowRegister = await this.BorrowRegisters.findUnique({ where: { id: BorrowRegisterId } });
         if (!findBorrowRegister) throw new HttpException(409, "You're not BorrowRegister");
 
-        const deleteBorrowRegisterData = await this.BorrowRegisters.delete({ where: { id: BorrowRegisterId } });
+        const deleteBorrowRegisterData = await this.BorrowRegisters.delete(this.deleteBuilder.whereId(BorrowRegisterId).getQuery());
         return deleteBorrowRegisterData;
     }
 
@@ -115,12 +120,12 @@ class BorrowRegisterService {
         const findBorrowRegister: BorrowRegister = await this.BorrowRegisters.findUnique({ where: { id: BorrowRegisterId } });
         if (!findBorrowRegister) throw new HttpException(409, "You're not BorrowRegister");
 
-        const borrowRegisterData = await this.BorrowRegisters.update({
-            where: {
-                id: BorrowRegisterId
-            },
-            data: { isRejected: true }
-        });
+        const query = this.updateBuilder
+            .addColumn({ name: "isRejected", value: true })
+            .whereId(BorrowRegisterId)
+            .getQuery();
+
+        const borrowRegisterData = await this.BorrowRegisters.update(query);
         return borrowRegisterData;
     }
 
