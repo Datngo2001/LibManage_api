@@ -12,7 +12,7 @@ export class UsersController {
   public userService = new userService();
 
   @Get('/users/borrower')
-  @UseBefore(authMiddleware([11]))
+  @UseBefore(authMiddleware([12]))
   @OpenAPI({ summary: 'Return a list of Borrower' })
   async getBorrowers() {
     const findAllUsersData: User[] = await this.userService.findAllBorrower();
@@ -20,7 +20,7 @@ export class UsersController {
   }
 
   @Get('/users/borrower/:id')
-  @UseBefore(authMiddleware([11]))
+  @UseBefore(authMiddleware([12]))
   @OpenAPI({ summary: 'Return find a borrower' })
   async getBorrowerById(@Param('id') userId: number) {
     const findOneUserData: User = await this.userService.findBorrowerByIdIncludeAllData(userId);
